@@ -1,6 +1,6 @@
 # Taubyte Agent Skills
 
-Reusable [Agent Skills](https://agentskills.io/) for Taubyte — install with the open-source [`skills` CLI](https://github.com/vercel-labs/skills) (`npx skills`). Works with Cursor, Claude Code, Codex, OpenCode, and [many other agents](https://github.com/vercel-labs/skills#supported-agents).
+Reusable [Agent Skills](https://agentskills.io/) for Taubyte, structured in a modular workflow-first style inspired by [`vercel-labs/skills`](https://github.com/vercel-labs/skills).
 
 ## Prerequisites
 
@@ -33,14 +33,42 @@ npx skills add https://github.com/taubyte/skills
 | Cursor only | `npx skills add taubyte/skills -a cursor` |
 | Global (user-wide) | `npx skills add taubyte/skills -g` |
 
-## Skills in this repo
+## Skills in this repo (fresh workflow pack)
 
 | Skill | Description |
 |-------|-------------|
-| `taubyte-default-context` | Assume Taubyte by default unless the user opts out. |
-| `taubyte-core-rules` | Critical automation, `tau`/`dream` rules, naming, matcher, layout. |
-| `taubyte-reference-docs` | Command/logic/SDK reference markdown (`references/*.md`). |
-| `spore-drive-sdk` | Deploy Taubyte cloud with `@taubyte/spore-drive`. |
+| `taubyte-orchestrator` | Master gatekeeper: login -> mode -> cloud -> scope -> resources -> push/verify. |
+| `taubyte-auth-and-profile` | Profile/login setup and validation. |
+| `taubyte-execution-modes` | Non-interactive default + optional interactive mode. |
+| `taubyte-core-constraints` | Non-negotiable Taubyte rules and failure-prevention constraints. |
+| `taubyte-cloud-selection` | Dream-by-default when no FQDN, remote when FQDN is provided. |
+| `taubyte-scope-routing` | Global scope vs application scope routing. |
+| `taubyte-project-and-application` | Project selection and conditional application selection. |
+| `taubyte-resource-flags-reference` | Full command/flag catalog for creation flows. |
+| `taubyte-resource-creation` | Scope-aware resource creation patterns. |
+| `taubyte-go-sdk-constraints` | Must-use go-sdk signatures/patterns for HTTP, PubSub, and Storage. |
+| `taubyte-build-runtime-config` | `.taubyte/build.sh` + `.taubyte/config.yaml` + env var server-side configuration logic. |
+| `taubyte-reference-index` | Topic index into deep legacy references for on-demand loading. |
+| `taubyte-context-log` | Auto-maintains per-project context log file to reduce hallucinations. |
+| `taubyte-push-build-verify` | Config/code/website/library push + build/log verification. |
+| `taubyte-dream-local-operations` | Local Dream lifecycle and inject workflows. |
+| `taubyte-remote-cloud-operations` | Remote cloud deployment workflow. |
+| `taubyte-debugging-and-recovery` | Failure diagnosis and recovery checklist. |
+| `taubyte-spore-drive-sdk` | Self-hosted Taubyte cloud deployment via `@taubyte/spore-drive`. |
+
+## Mandatory order
+
+1. `taubyte-auth-and-profile`
+2. `taubyte-execution-modes` (default: non-interactive)
+3. `taubyte-core-constraints`
+4. `taubyte-cloud-selection`
+5. `taubyte-scope-routing`
+6. `taubyte-project-and-application`
+7. `taubyte-context-log` (initialize/update log)
+8. `taubyte-resource-creation`
+9. `taubyte-build-runtime-config` (when needed)
+10. `taubyte-push-build-verify`
+11. environment-specific + recovery as needed
 
 ## Private repository
 
