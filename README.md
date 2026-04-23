@@ -1,6 +1,13 @@
 # Taubyte Agent Skills
 
-Reusable [Agent Skills](https://agentskills.io/) for Taubyte, structured in a modular workflow-first style inspired by [`vercel-labs/skills`](https://github.com/vercel-labs/skills).
+Reusable [Agent Skills](https://agentskills.io/) for Taubyte, structured as a workflow-first pack inspired by [`vercel-labs/skills`](https://github.com/vercel-labs/skills).
+
+## What This Repo Provides
+
+- A full Taubyte execution workflow (auth -> cloud select -> scope -> resource ops -> push/verify).
+- Safety constraints to reduce invalid commands, bad configs, and deployment mistakes.
+- Local Dream helpers, including host-based launch for `*.localtau` resources.
+- Optional deployment support for self-hosted cloud via `@taubyte/spore-drive`.
 
 ## Prerequisites
 
@@ -9,36 +16,82 @@ Reusable [Agent Skills](https://agentskills.io/) for Taubyte, structured in a mo
 
 You do **not** need a Vercel account or the `vercel` CLI.
 
-## Install
+## Quick Start (Recommended)
 
-From your project directory (recommended, installs all skills in one step):
+Install all skills in one command:
 
 ```bash
 npx skills add taubyte/skills --all
 ```
 
-Or with a full URL:
+Equivalent full URL:
 
 ```bash
 npx skills add https://github.com/taubyte/skills --all
 ```
 
-### Options (see [skills CLI](https://github.com/vercel-labs/skills))
+If your `npx` cache is stale, use:
 
-| Goal | Example |
+```bash
+npx skills@latest add taubyte/skills --all
+```
+
+## Install By Major IDE/Agent
+
+Each block below is copy-ready for one editor/agent.
+
+### Cursor
+
+```bash
+npx skills add taubyte/skills --skill "*" -a cursor -y
+```
+
+### Claude Code
+
+```bash
+npx skills add taubyte/skills --skill "*" -a claude-code -y
+```
+
+### Codex
+
+```bash
+npx skills add taubyte/skills --skill "*" -a codex -y
+```
+
+### GitHub Copilot
+
+```bash
+npx skills add taubyte/skills --skill "*" -a github-copilot -y
+```
+
+### Windsurf
+
+```bash
+npx skills add taubyte/skills --skill "*" -a windsurf -y
+```
+
+Install to multiple agents at once:
+
+```bash
+npx skills add taubyte/skills --skill "*" --agent cursor claude-code codex -y
+```
+
+## Common CLI Tasks
+
+See [skills CLI](https://github.com/vercel-labs/skills) for full docs.
+
+| Goal | Command |
 |------|---------|
-| List skills without installing | `npx skills add taubyte/skills --list` |
+| List skills in this repo (no install) | `npx skills add taubyte/skills --list` |
 | Install one skill | `npx skills add taubyte/skills --skill taubyte-core-rules` |
 | Install all skills (non-interactive) | `npx skills add taubyte/skills --all` |
-| Install all skills for Cursor only | `npx skills add taubyte/skills --skill "*" -a cursor -y` |
-| Non-interactive | `npx skills add taubyte/skills -y` |
-| Cursor only | `npx skills add taubyte/skills -a cursor` |
-| Global (user-wide) | `npx skills add taubyte/skills -g` |
+| Cursor only | `npx skills add taubyte/skills --skill "*" -a cursor -y` |
+| Global install (user-wide) | `npx skills add taubyte/skills -g` |
 
-## Skills in this repo (fresh workflow pack)
+## Skill Catalog
 
-| Skill | Description |
-|-------|-------------|
+| Skill | Purpose |
+|-------|---------|
 | `taubyte-orchestrator` | Master gatekeeper: login -> mode -> cloud -> scope -> resources -> push/verify. |
 | `taubyte-auth-and-profile` | Profile/login setup and validation. |
 | `taubyte-execution-modes` | Non-interactive default + optional interactive mode. |
@@ -60,7 +113,7 @@ npx skills add https://github.com/taubyte/skills --all
 | `taubyte-debugging-and-recovery` | Failure diagnosis and recovery checklist. |
 | `taubyte-spore-drive-sdk` | Self-hosted Taubyte cloud deployment via `@taubyte/spore-drive`. |
 
-## Mandatory order
+## Required Workflow Order
 
 1. `taubyte-auth-and-profile`
 2. `taubyte-execution-modes` (default: non-interactive)
@@ -72,11 +125,11 @@ npx skills add https://github.com/taubyte/skills --all
 8. `taubyte-resource-creation`
 9. `taubyte-build-runtime-config` (when needed)
 10. `taubyte-push-build-verify`
-11. environment-specific + recovery as needed
+11. Environment-specific + recovery as needed
 
-## Private repository
+## Private Forks
 
-If you fork this repo as **private**, ensure Git can authenticate (SSH or HTTPS with credentials), same as any `git clone`.
+If you fork this repo as **private**, ensure Git authentication is configured (SSH or HTTPS credentials), same as any private `git clone`.
 
 ## License
 
