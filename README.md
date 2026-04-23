@@ -18,22 +18,18 @@ You do **not** need a Vercel account or the `vercel` CLI.
 
 ## Quick Start (Recommended)
 
-Install all skills in one command:
+Install globally for Cursor (copy-ready):
 
 ```bash
-npx skills add taubyte/skills --all
+mkdir -p ~/.cursor/skills
+npx skills add owner/repo --agent cursor --global --copy --yes
 ```
 
-Equivalent full URL:
+Example for this repo:
 
 ```bash
-npx skills add https://github.com/taubyte/skills --all
-```
-
-If your `npx` cache is stale, use:
-
-```bash
-npx skills@latest add taubyte/skills --all
+mkdir -p ~/.cursor/skills
+npx skills add taubyte/skills --agent cursor --global --copy --yes
 ```
 
 ## Install By Major IDE/Agent
@@ -43,37 +39,37 @@ Each block below is copy-ready for one editor/agent.
 ### Cursor
 
 ```bash
-npx skills add taubyte/skills --skill "*" -a cursor -y
+npx skills add taubyte/skills --agent cursor --global --copy --yes
 ```
 
 ### Claude Code
 
 ```bash
-npx skills add taubyte/skills --skill "*" -a claude-code -y
+npx skills add taubyte/skills --agent claude-code --global --copy --yes
 ```
 
 ### Codex
 
 ```bash
-npx skills add taubyte/skills --skill "*" -a codex -y
+npx skills add taubyte/skills --agent codex --global --copy --yes
 ```
 
 ### GitHub Copilot
 
 ```bash
-npx skills add taubyte/skills --skill "*" -a github-copilot -y
+npx skills add taubyte/skills --agent github-copilot --global --copy --yes
 ```
 
 ### Windsurf
 
 ```bash
-npx skills add taubyte/skills --skill "*" -a windsurf -y
+npx skills add taubyte/skills --agent windsurf --global --copy --yes
 ```
 
-Install to multiple agents at once:
+If your `npx` cache is stale, use:
 
 ```bash
-npx skills add taubyte/skills --skill "*" --agent cursor claude-code codex -y
+npx skills@latest add taubyte/skills --agent cursor --global --copy --yes
 ```
 
 ## Common CLI Tasks
@@ -83,10 +79,10 @@ See [skills CLI](https://github.com/vercel-labs/skills) for full docs.
 | Goal | Command |
 |------|---------|
 | List skills in this repo (no install) | `npx skills add taubyte/skills --list` |
-| Install one skill | `npx skills add taubyte/skills --skill taubyte-core-rules` |
-| Install all skills (non-interactive) | `npx skills add taubyte/skills --all` |
-| Cursor only | `npx skills add taubyte/skills --skill "*" -a cursor -y` |
-| Global install (user-wide) | `npx skills add taubyte/skills -g` |
+| Install one skill globally for Cursor | `npx skills add taubyte/skills --skill taubyte-core-rules --agent cursor --global --copy --yes` |
+| Install all skills globally for Cursor | `npx skills add taubyte/skills --agent cursor --global --copy --yes` |
+| Template command for any repo | `npx skills add owner/repo --agent cursor --global --copy --yes` |
+| Create global Cursor skills path | `mkdir -p ~/.cursor/skills` |
 
 ## Skill Catalog
 
