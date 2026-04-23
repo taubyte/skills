@@ -39,6 +39,12 @@ Use this skill when:
 7. Write changes with elevated permissions.
 8. If elevation fails, provide exact manual steps and content to append.
 
+## Automation policy
+
+- Always attempt automatic update first (idempotent write, no duplicates).
+- On Windows, try elevated write path first; if blocked, switch to manual fallback immediately with exact lines.
+- After update attempt (success or fallback), run verification curl checks so execution can continue.
+
 ## Safety rules
 
 - Never remove unrelated host mappings.
@@ -73,4 +79,5 @@ http://<fqdn>:<port>/
 3. Append:
    - `# Taubyte Local Domains`
    - `127.0.0.1 <fqdn>`
+   - (repeat one line per FQDN)
 4. Save.

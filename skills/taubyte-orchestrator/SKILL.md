@@ -31,6 +31,15 @@ Use for any Taubyte request before running resource-specific operations.
 - `taubyte-hosts-file-editor` when `.localtau` resources must open by hostname.
 - `taubyte-local-host-launch` to validate/launch website or API URLs using FQDN + port.
 
+## Auto-execution policy for local runtime checks
+
+- When user asks to "execute locally", "open URL", "run function", or "test website/function", do this automatically after push/deploy:
+  1. run `taubyte-hosts-file-editor` (attempt automatic hosts update first),
+  2. run `taubyte-local-host-launch` (hostname-based curl/browser-ready URLs),
+  3. return concrete URLs and curl commands.
+- If hosts elevation fails, provide exact manual hosts lines and continue verification with `curl --resolve`.
+- If Docker is unavailable on Dream path, stop runtime claims and report the blocker explicitly.
+
 ## Rules
 
 - Do not skip or reorder gates.
