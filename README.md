@@ -11,16 +11,16 @@ You do **not** need a Vercel account or the `vercel` CLI.
 
 ## Install
 
-From your project directory:
+From your project directory (recommended, installs all skills in one step):
 
 ```bash
-npx skills add taubyte/skills
+npx skills add taubyte/skills --all
 ```
 
 Or with a full URL:
 
 ```bash
-npx skills add https://github.com/taubyte/skills
+npx skills add https://github.com/taubyte/skills --all
 ```
 
 ### Options (see [skills CLI](https://github.com/vercel-labs/skills))
@@ -29,6 +29,8 @@ npx skills add https://github.com/taubyte/skills
 |------|---------|
 | List skills without installing | `npx skills add taubyte/skills --list` |
 | Install one skill | `npx skills add taubyte/skills --skill taubyte-core-rules` |
+| Install all skills (non-interactive) | `npx skills add taubyte/skills --all` |
+| Install all skills for Cursor only | `npx skills add taubyte/skills --skill "*" -a cursor -y` |
 | Non-interactive | `npx skills add taubyte/skills -y` |
 | Cursor only | `npx skills add taubyte/skills -a cursor` |
 | Global (user-wide) | `npx skills add taubyte/skills -g` |
@@ -52,6 +54,8 @@ npx skills add https://github.com/taubyte/skills
 | `taubyte-context-log` | Auto-maintains per-project context log file to reduce hallucinations. |
 | `taubyte-push-build-verify` | Config/code/website/library push + build/log verification. |
 | `taubyte-dream-local-operations` | Local Dream lifecycle and inject workflows. |
+| `taubyte-hosts-file-editor` | Safe, idempotent hosts-file updates for local `*.localtau` hostname access. |
+| `taubyte-local-host-launch` | Launch and verify Dream local resources by FQDN/port in curl and browser. |
 | `taubyte-remote-cloud-operations` | Remote cloud deployment workflow. |
 | `taubyte-debugging-and-recovery` | Failure diagnosis and recovery checklist. |
 | `taubyte-spore-drive-sdk` | Self-hosted Taubyte cloud deployment via `@taubyte/spore-drive`. |
