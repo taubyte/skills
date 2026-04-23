@@ -11,19 +11,20 @@ Use for any Taubyte request before running resource-specific operations.
 
 ## Mandatory gate order
 
-1. `taubyte-auth-and-profile`
-2. `taubyte-execution-modes`
-3. `taubyte-core-constraints`
-4. `taubyte-cloud-selection`
-5. `taubyte-scope-routing`
-6. `taubyte-project-and-application`
-7. `taubyte-context-log`
-8. `taubyte-resource-creation`
-9. `taubyte-go-sdk-constraints` (for Go function code paths)
-10. `taubyte-build-runtime-config` (if server-side vars/config/build logic is needed)
-11. `taubyte-push-build-verify`
-12. `taubyte-dream-local-operations` or `taubyte-remote-cloud-operations`
-13. `taubyte-debugging-and-recovery` on failure
+1. `taubyte-cli-prereqs` (hard gate)
+2. `taubyte-auth-and-profile`
+3. `taubyte-execution-modes`
+4. `taubyte-core-constraints`
+5. `taubyte-cloud-selection`
+6. `taubyte-scope-routing`
+7. `taubyte-project-and-application`
+8. `taubyte-context-log`
+9. `taubyte-resource-creation`
+10. `taubyte-go-sdk-constraints` (for Go function code paths)
+11. `taubyte-build-runtime-config` (if server-side vars/config/build logic is needed)
+12. `taubyte-push-build-verify`
+13. `taubyte-dream-local-operations` or `taubyte-remote-cloud-operations`
+14. `taubyte-debugging-and-recovery` on failure
 
 ## Optional local host access gates (Dream)
 
@@ -33,6 +34,7 @@ Use for any Taubyte request before running resource-specific operations.
 ## Rules
 
 - Do not skip or reorder gates.
+- If `taubyte-cli-prereqs` fails to verify both binaries, stop immediately.
 - Default to non-interactive mode.
 - Use JSON verification (`tau --json current`) after context changes.
 - Keep commands sequential when selection/context can change.

@@ -10,20 +10,26 @@ description: Pushes config/code and verifies builds/logs. Includes website/libra
 1. Pre-push build/runtime config check:
    - Validate `.taubyte/build.sh` and `.taubyte/config.yaml` for changed functions/websites/libraries.
    - Ensure required env vars are declared when server-side config is needed.
-2. Push project config:
+2. If website/library was newly created in this workflow, import first:
+   ```bash
+   tau import website --name <website>
+   tau import library --name <library>
+   ```
+   - Run only for resources that exist and are relevant to this workflow.
+3. Push project config:
    ```bash
    tau push project --config-only --message "<message>"
    ```
-3. Check jobs/logs:
+4. Check jobs/logs:
    ```bash
    tau query builds --since 1h
    tau query logs --jid <job_id>
    ```
-4. Push project code:
+5. Push project code:
    ```bash
    tau push project --code-only --message "<message>"
    ```
-5. Website/library repositories:
+6. Website/library repositories:
    - Preferred:
      ```bash
      tau push website --name <website> --message "<message>"
@@ -35,7 +41,7 @@ description: Pushes config/code and verifies builds/logs. Includes website/libra
      git commit -m "<message>"
      git push origin main
      ```
-6. Re-check builds/logs and update context log.
+7. Re-check builds/logs and update context log.
 
 ## Push policy guardrails
 

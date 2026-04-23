@@ -25,6 +25,34 @@ MSYS_NO_PATHCONV=1 tau --defaults --yes new website --name <site> --domains <dom
 MSYS_NO_PATHCONV=1 tau --defaults --yes new library --name <lib> --path /libraries/<lib> --template empty --generate-repository --no-private --no-embed-token --branch main
 ```
 
+## Repository binding guardrails (website/library)
+
+- Never call `new website`/`new library` without explicit repository strategy.
+- Preferred deterministic creation:
+
+```bash
+MSYS_NO_PATHCONV=1 tau --defaults --yes new website \
+  --name <site> \
+  --domains <domain> \
+  --paths / \
+  --template empty \
+  --generate-repository \
+  --repository-name tb_code_<project>_<site> \
+  --private \
+  --no-embed-token \
+  --branch main
+```
+
+- If using existing repository, pass explicit `--repository-name` or `--repository-id`.
+- After creation, run import before push:
+
+```bash
+tau import website --name <site>
+tau import library --name <lib>
+```
+
+- After creation/import, verify repo fullname/ID in generated config YAML before any push.
+
 ## Build/runtime config references
 
 - Use `taubyte-build-runtime-config` for `.taubyte/build.sh` and `.taubyte/config.yaml` management.
