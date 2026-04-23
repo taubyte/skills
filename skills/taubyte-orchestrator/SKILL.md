@@ -25,6 +25,11 @@ Use for any Taubyte request before running resource-specific operations.
 12. `taubyte-dream-local-operations` or `taubyte-remote-cloud-operations`
 13. `taubyte-debugging-and-recovery` on failure
 
+## Optional local host access gates (Dream)
+
+- `taubyte-hosts-file-editor` when `.localtau` resources must open by hostname.
+- `taubyte-local-host-launch` to validate/launch website or API URLs using FQDN + port.
+
 ## Rules
 
 - Do not skip or reorder gates.

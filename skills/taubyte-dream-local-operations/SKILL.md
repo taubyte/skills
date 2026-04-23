@@ -47,3 +47,5 @@ description: Dream local lifecycle operations: start/status/universe, inject flo
 
 - If a Dream domain resolves to `.localtau`, update hosts mapping when required.
 - Typical mapping target: `127.0.0.1 <fqdn>`.
+- Use `taubyte-hosts-file-editor` for safe/idempotent hosts updates.
+- Use `taubyte-local-host-launch` to validate and open resources by hostname.
