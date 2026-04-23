@@ -23,8 +23,10 @@ description: Scope-aware resource creation workflow. Uses non-interactive mode b
 - Use default non-interactive mode unless user requested interactive.
 - For full flags, use `taubyte-resource-flags-reference`.
 - Use `MSYS_NO_PATHCONV=1` for path-like flags in Git Bash.
+- Never use `--generated-fqdn-prefix` unless the user explicitly asks for a specific prefix value.
 - If server-side config or env vars are needed, update `.taubyte/config.yaml` and `.taubyte/build.sh` before push.
 - For Go function implementation correctness, apply `taubyte-go-sdk-constraints`.
+- After creating a serverless function with `--template empty`, immediately edit the generated `empty.go` with a real implementation (do not leave scaffold code).
 - Website/library creation must use explicit repo strategy; never rely on implicit repo auto-selection.
 - Deterministic default for generated repos:
   - website: `tb_code_<project>_<website>`

@@ -23,3 +23,5 @@ description: Remote cloud workflow with explicit fqdn selection and deployment v
 ## Note
 
 - Domain FQDN may be accepted at creation time but fail later in config build logs if DNS proof is missing.
+- Do not use `--generated-fqdn-prefix` unless the user explicitly requests a prefix.
+- After `new function --template empty`, always update generated `empty.go` before any push or runtime test.

@@ -25,6 +25,20 @@ MSYS_NO_PATHCONV=1 tau --defaults --yes new website --name <site> --domains <dom
 MSYS_NO_PATHCONV=1 tau --defaults --yes new library --name <lib> --path /libraries/<lib> --template empty --generate-repository --no-private --no-embed-token --branch main
 ```
 
+## Domain generation guardrails
+
+- Never add `--generated-fqdn-prefix` by default.
+- Only use `--generated-fqdn-prefix <prefix>` when the user explicitly requests a specific prefix.
+- If the user does not request a prefix and generated FQDN is needed, use:
+
+```bash
+tau --defaults --yes new domain --name <domain> --generated-fqdn --type auto --description "<desc>"
+```
+
+## Function post-create guardrail
+
+- Immediately after `new function --template empty`, replace scaffold content in `<function_path>/empty.go` with an actual handler implementation before push/test.
+
 ## Repository binding guardrails (website/library)
 
 - Never call `new website`/`new library` without explicit repository strategy.

@@ -37,6 +37,8 @@ description: Dream local lifecycle operations: start/status/universe, inject flo
 
 - Always pass `--universe`.
 - `push-all` must succeed before `push-specific`.
+- Do not use `--generated-fqdn-prefix` unless the user explicitly asks for a prefix value.
+- After creating a function from `--template empty`, always edit generated `empty.go` before push/inject/test.
 - For website `push-specific`:
   - `--rid` must be numeric GitHub repository ID (`source.github.id`)
   - `--fn` must be repository fullname (`source.github.fullname`)

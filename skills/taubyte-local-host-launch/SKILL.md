@@ -51,3 +51,5 @@ Use this skill after domain/resource creation in Dream/local when the goal is to
 - Hosts mappings are OS-level and affect browser resolution.
 - `curl --resolve` is request-scoped and does not modify system DNS.
 - For HTTPS tests, prefer `--resolve` so hostname/SNI stays correct.
+- Do not introduce `--generated-fqdn-prefix` unless the user explicitly asks for a prefix.
+- If a function was created with `--template empty`, ensure `empty.go` is implemented before launching local tests.
