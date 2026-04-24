@@ -11,8 +11,8 @@ Use for any Taubyte request before running resource-specific operations.
 
 ## Mandatory gate order
 
-1. `taubyte-cli-prereqs` (hard gate)
-2. `taubyte-auth-and-profile`
+1. `taubyte-cli-prereqs` (hard gate: **Node.js** present; user prompted to install if missing; **`tau login`** / browser GitHub auth before repo work; then `tau` / `dream`)
+2. `taubyte-auth-and-profile` (profiles, `tau login --new`, switches — complements Step 1 login)
 3. `taubyte-execution-modes`
 4. `taubyte-core-constraints`
 5. `taubyte-cloud-selection`
@@ -43,7 +43,7 @@ Use for any Taubyte request before running resource-specific operations.
 ## Rules
 
 - Do not skip or reorder gates.
-- If `taubyte-cli-prereqs` fails to verify both binaries, stop immediately.
+- If `taubyte-cli-prereqs` fails (missing **Node**, missing **`tau login`** when GitHub is needed, or missing `tau`/`dream`), stop immediately.
 - Default to non-interactive mode.
 - Use JSON verification (`tau --json current`) after context changes.
 - Keep commands sequential when selection/context can change.
