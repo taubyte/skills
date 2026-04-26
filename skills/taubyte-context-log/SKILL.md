@@ -29,9 +29,36 @@ For every Taubyte workflow, the agent must create/update a log file inside the c
 8. Build tracking
    - latest relevant build/job IDs
    - last log diagnosis (root cause summary)
+   - build/job completion status (queued/running/success/failed)
+   - wait/poll notes (how long waited, last observed state)
 9. CLI versions snapshot
    - `tau version`
    - `dream --version || dream --help` (some Dream builds do not expose `--version`)
+
+## Build job waiting policy (do not race ahead)
+
+Builds are often **asynchronous** and can take minutes. After any step that triggers a build (push, inject, retry, build command), **do not continue** to downstream steps that assume a ready build until you have **observed completion**.
+
+Rules:
+
+- If the workflow triggers a build, you must **wait/poll** until the relevant build(s) are **success** or **failed**, or until a reasonable timeout is reached.
+- Prefer **short polling with backoff** (e.g. every 5–10s initially, then 15–30s) and record the latest status in `context.log.md` and `logs.txt`.
+- If the build is still queued/running at timeout: **stop**, tell the user it is still running, and capture the last known build/job IDs and status so the next run can resume.
+
+Recommended commands (examples; use the project’s actual build/log commands):
+
+```bash
+# See recent builds and their statuses (capture IDs)
+tau query builds --since 1h
+
+# Re-run until completion state changes (poll)
+tau query builds --since 1h
+```
+
+When a build fails, capture the build/job ID(s), then pull logs/diagnosis (per the relevant push/build/verify skill) and record:
+- root cause summary
+- next remediation step
+- whether a rebuild/retry was triggered
 
 ## Update triggers
 

@@ -32,6 +32,16 @@ mkdir -p ~/.cursor/skills
 npx skills add taubyte/skills --agent cursor --global --copy --yes
 ```
 
+### Link skills to the current editor (after installation)
+
+To register **every** skill in this pack against the editor the Skills CLI treats as **current** (global install, all skills):
+
+```bash
+npx skills add taubyte/skills -g --all
+```
+
+Run this once after installation if you prefer this shorthand over passing `--agent` explicitly in the per-editor blocks below.
+
 ## Install By Major IDE/Agent
 
 Each block below is copy-ready for one editor/agent.
@@ -81,6 +91,7 @@ See [skills CLI](https://github.com/vercel-labs/skills) for full docs.
 | List skills in this repo (no install) | `npx skills add taubyte/skills --list` |
 | Install one skill globally for Cursor | `npx skills add taubyte/skills --skill taubyte-core-rules --agent cursor --global --copy --yes` |
 | Install all skills globally for Cursor | `npx skills add taubyte/skills --agent cursor --global --copy --yes` |
+| Link all skills to the **current** editor (global) | `npx skills add taubyte/skills -g --all` |
 | Template command for any repo | `npx skills add owner/repo --agent cursor --global --copy --yes` |
 | Create global Cursor skills path | `mkdir -p ~/.cursor/skills` |
 

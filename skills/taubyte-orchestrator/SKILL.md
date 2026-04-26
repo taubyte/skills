@@ -11,7 +11,7 @@ Use for any Taubyte request before running resource-specific operations.
 
 ## Mandatory gate order
 
-1. `taubyte-cli-prereqs` (hard gate: **Node.js** present; user prompted to install if missing; **`tau login`** / browser GitHub auth before repo work; then `tau` / `dream`)
+1. `taubyte-cli-prereqs` (hard gate: **Node.js** and **Docker** — install/start when possible, else prompt; **`@taubyte/cli`** / **`@taubyte/dream`**; auth via **`taubyte-auth-and-profile`** before GitHub-backed repo work)
 2. `taubyte-auth-and-profile` (profiles, `tau login --new`, switches — complements Step 1 login)
 3. `taubyte-execution-modes`
 4. `taubyte-core-constraints`
@@ -42,8 +42,9 @@ Use for any Taubyte request before running resource-specific operations.
 
 ## Rules
 
+- **Applications:** do **not** create or select an application by default. Follow **`taubyte-scope-routing`** and **`taubyte-project-and-application`**: use **project-only** context for simple **website** or **function** (and global resources) unless the user wants **multiple contexts/applications** or the task is **application-scoped**.
 - Do not skip or reorder gates.
-- If `taubyte-cli-prereqs` fails (missing **Node**, missing **`tau login`** when GitHub is needed, or missing `tau`/`dream`), stop immediately.
+- If `taubyte-cli-prereqs` fails (missing **Node** or **Docker** / daemon not running, missing **`tau login`** when GitHub is needed, or missing `tau`/`dream`), stop immediately.
 - Default to non-interactive mode.
 - Use JSON verification (`tau --json current`) after context changes.
 - Keep commands sequential when selection/context can change.

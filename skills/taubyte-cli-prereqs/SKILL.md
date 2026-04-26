@@ -1,104 +1,200 @@
 ---
 name: taubyte-cli-prereqs
-description: Hard preflight for Node.js, tau/dream installation, version checks, and first-time GitHub login. Must run before any Taubyte workflow.
+description: Hard gate before any Taubyte workflow — Node.js and Docker (install when possible), @taubyte/cli and @taubyte/dream via npm, auth per taubyte-auth-and-profile. Version checks and hard stops.
 ---
 
-# Taubyte CLI Prerequisites (Hard Gate)
+# Taubyte CLI prerequisites (hard gate)
 
-## Rule
+## Purpose
 
-Run this gate before any other Taubyte skill.
+Run this skill **before** any other Taubyte skill. It ensures **Node.js**, **Docker** (engine running — needed for **Dream**, inject, and local container workflows), **`tau`** / **`dream`**, and (when GitHub work is in scope) **authenticated `tau` profile** are in place.
 
-1. If **Node.js** is missing, **stop** and **ask the user** to install it (do not run `npm`).
-2. If **`tau login` / GitHub auth** has never been completed for this machine, **stop** and **ask the user** to run **`tau login`** in a terminal and finish **browser GitHub sign-in** before any repo or cloud work.
-3. If `tau` or `dream` is missing after Node is OK, install CLIs. If install fails, stop immediately.
+---
 
-## Step 0: Node.js (required for npm-installed `tau` / `@taubyte/dream`)
+## Stop conditions (read first)
 
-Detect:
+| Situation | Action |
+|-----------|--------|
+| **Node** missing and **cannot** be installed from this environment | **Stop**; give OS-specific install instructions; do **not** run `npm i -g` without `node`. |
+| **Docker** missing, daemon not running, and **cannot** be fixed from this environment | **Stop**; give install/start instructions (see **Docker** section). |
+| **GitHub-backed** work needed but **no `tau` profile** / login incomplete | **Stop**; follow **`taubyte-auth-and-profile`** (browser login hard stop applies there). |
+| **`tau` or `dream`** still broken after install attempts | **Stop**; log attempts in **`.taubyte_ai/logs.txt`** (or project context log per **`taubyte-context-log`**). |
+
+---
+
+## Workflow order
+
+1. **Node.js** — detect; **install automatically when possible** (see §1).  
+2. **Docker** — detect CLI + **daemon**; **install or start** when possible (see §2).  
+3. **`tau` / `dream`** — detect; install from **`@taubyte`** npm packages when missing (see §3).  
+4. **`tau login` / profile** — **`taubyte-auth-and-profile`** for all login policy; quick **`tau --json current`** gate here (see §4).  
+5. **Verify** after any install (see §5).
+
+---
+
+## 1. Node.js
+
+### Detect
 
 ```bash
 command -v node >/dev/null 2>&1 && node --version
 command -v npm >/dev/null 2>&1 && npm --version
 ```
 
-If `node` is missing or `node --version` fails:
+### If `node` is missing or `node --version` fails
 
-1. **Stop** the Taubyte workflow immediately.
-2. **Ask the user** to install **Node.js** (LTS recommended), for example:
-   - Windows: https://nodejs.org/ or `winget install OpenJS.NodeJS.LTS`
-   - macOS: https://nodejs.org/ or `brew install node`
-   - Linux: distro Node package or https://nodejs.org/
-3. Tell them to **open a new terminal** after install, then rerun this skill from Step 0.
+**Prefer installing Node for the user** when the environment supports it (network, permissions, non-interactive package managers):
 
-Do **not** run `npm i -g @taubyte/cli` or `npm i -g @taubyte/dream` when Node is absent.
+- **Windows** (e.g. `winget` available):
 
-## Step 1: First-time GitHub login (`tau login`)
+  ```bash
+  winget install -e --id OpenJS.NodeJS.LTS --accept-package-agreements --accept-source-agreements
+  ```
 
-Any workflow that touches **GitHub** (clone, `tau new project`, `tau push`, generated repos) needs an authenticated Taubyte profile.
+- **macOS** (`brew` on PATH):
 
-1. Run **`tau --json current`** and inspect **Profile** (and cloud selection as needed).
-2. If there is **no profile**, or the user says they have **never** logged in on this machine, **stop** and **ask the user** to run:
+  ```bash
+  brew install node
+  ```
 
-   ```bash
-   tau login
-   ```
+- **Linux** (Debian/Ubuntu family, when `apt-get` is usable):
 
-   That starts **browser-based GitHub authentication** (OAuth / device flow depending on CLI version). The user must **complete the flow in the browser** themselves. Do not skip this step or invent tokens.
+  ```bash
+  sudo apt-get update && sudo apt-get install -y nodejs npm
+  ```
 
-3. After they confirm login, verify again:
+If automated install **fails**, is **blocked** (no sudo, no winget/brew, CI sandbox), or the OS is **unclear**, **stop** and ask the user to install **Node.js LTS** from [https://nodejs.org/](https://nodejs.org/) (or their distro’s Node LTS packages), then **open a new terminal** and rerun this skill.
 
-   ```bash
-   tau --json current
-   ```
+**Do not** run `npm i -g @taubyte/cli` or `npm i -g @taubyte/dream` until `node` and `npm` work.
 
-4. For multiple profiles or named setup, use **`taubyte-auth-and-profile`** (`tau login --new --name <profile> --provider github`, etc.).
+---
 
-If the user cannot or will not complete **`tau login`**, **do not continue** to project create, push, import, or website repo operations.
+## 2. Docker
 
-## Step 2: detect `tau` / `dream` binaries and versions
+Docker is required for **Dream**, **`dream inject`**, and other **local** container-backed Taubyte flows (see **`taubyte-dream-local-operations`**, **`taubyte-cloud-selection`**). You need both the **`docker` CLI** and a **running daemon** (`docker info` succeeds).
+
+### Detect
+
+```bash
+command -v docker >/dev/null 2>&1 && docker version
+docker info
+```
+
+- If **`docker` is not in PATH** → treat as **not installed**; try **install** workflow below.  
+- If **`docker info`** fails with **connection / daemon** errors but `docker version` shows a client → the engine is **stopped** or the user lacks permission. Prefer **starting** Docker Desktop (Windows/macOS) or **`sudo systemctl start docker`** (Linux), or **`sudo usermod -aG docker $USER`** + re-login when the error is permission-related. **Do not** assume a fresh install fixes a stopped daemon.
+
+### Install when the CLI is missing (automate when possible)
+
+- **Windows** (`winget`):
+
+  ```bash
+  winget install -e --id Docker.DockerDesktop --accept-package-agreements --accept-source-agreements
+  ```
+
+  After install, the user may need to **start Docker Desktop** once (or reboot). Re-run **`docker info`** after they confirm it is running.
+
+- **macOS** (`brew`):
+
+  ```bash
+  brew install --cask docker
+  ```
+
+  Then start **Docker Desktop** from Applications and re-check **`docker info`**.
+
+- **Linux** (Debian/Ubuntu, when `apt-get` + sudo work):
+
+  ```bash
+  sudo apt-get update && sudo apt-get install -y docker.io
+  sudo systemctl enable --now docker
+  ```
+
+  If builds still fail with permission errors, document **`sudo usermod -aG docker <user>`** and logging out/in, or use **`sudo docker info`** only to confirm the daemon — long-term, the user should be in the **`docker`** group.
+
+If install is **not possible** (no admin, winget/brew/apt unavailable, headless policy), **stop** and point the user to [https://docs.docker.com/get-docker/](https://docs.docker.com/get-docker/) for **Docker Engine** or **Docker Desktop**, then rerun this skill once **`docker info`** works.
+
+---
+
+## 3. Taubyte CLIs on npm (`@taubyte` scope)
+
+Official **`tau`** and **Dream** packages are published on npm under the **`@taubyte`** organization, for example:
+
+- **`@taubyte/cli`** — provides the **`tau`** command (wrapper downloads the platform `tau` binary as needed).  
+- **`@taubyte/dream`** — local cloud / **Dream** CLI.
+
+Browse or confirm versions: [https://www.npmjs.com/search?q=scope%3A%40taubyte](https://www.npmjs.com/search?q=scope%3A%40taubyte).
+
+### Detect
 
 ```bash
 command -v tau >/dev/null 2>&1 && tau version
 command -v dream >/dev/null 2>&1 && (dream --version || dream --help) || true
 ```
 
-If `dream` fails but Node works, a broken shell **alias** may point to a missing `dream.exe`. Prefer:
+If `dream` fails but Node works, a broken shell **alias** may point to a missing binary. Try:
 
 ```bash
 node "$(npm root -g)/@taubyte/dream/index.js" --help
 ```
 
-## Step 3: install missing CLI(s)
+### Install when missing (Node + npm must work)
 
-Only when Steps 0–2 show Node is present, the user is logged in (or login not required yet for read-only steps), and `tau` or Dream is still missing.
-
-Use `npm` as default cross-platform installer:
+Default: **global npm**:
 
 ```bash
 npm i -g @taubyte/cli
 npm i -g @taubyte/dream
 ```
 
-Alternative installer (when npm path is blocked):
+**Alternative** (e.g. npm global path blocked):
 
 ```bash
 curl https://get.tau.link/cli | sh
 curl https://get.tau.link/dream | sh
 ```
 
-## Step 4: verify install after changes
+If install **fails**, **stop** immediately (see stop conditions).
+
+---
+
+## 4. Auth and `tau login` (defer to `taubyte-auth-and-profile`)
+
+Any flow that touches **GitHub** (clone, `tau new project`, `tau push`, generated repos) needs a valid Taubyte **profile** and GitHub auth.
+
+**Do not improvise login policy here.** Load and follow **`taubyte-auth-and-profile`** for:
+
+- **`tau login`**, **`tau login --new`**, **`--name`**, **`--token`**, **`--provider github`**
+- **Browser-based login** (tell user, **stop** until done — see that skill)
+- **Non-interactive** patterns with **`taubyte-execution-modes`**
+
+**Minimal gate check in this skill only:**
+
+```bash
+tau --json current
+```
+
+Inspect **Profile** (and cloud if needed). If there is **no profile** and the upcoming work **requires GitHub**, apply **`taubyte-auth-and-profile`** and do **not** continue to project create, push, import, or website repo operations until auth is resolved.
+
+If the user **refuses** or **cannot** complete required login, **stop** the Taubyte workflow.
+
+---
+
+## 5. Verify after installs
 
 ```bash
 node --version
+npm --version
+docker version
+docker info
 tau version
 dream --version || dream --help || node "$(npm root -g)/@taubyte/dream/index.js" --help
 ```
 
-## Hard stop condition
+---
 
-- If **Node** is missing after asking the user to install: stop.
-- If **GitHub auth** is required for the next step but **`tau login`** was not completed: stop and ask the user to run **`tau login`** and finish in the browser.
-- If `tau` or Dream still fails after install attempts: stop.
-- Log the failure and attempted fixes in `.taubyte_ai/logs.txt`.
-- Do not continue to cloud/project/resource operations.
+## Hard stops (summary)
+
+- **No Node** (and install not possible or failed): stop; no global `@taubyte` npm installs.  
+- **No working Docker** (CLI missing and install failed, or **daemon** not running / no permission after user guidance): stop before Dream / inject / local container work.  
+- **GitHub work** without completed auth per **`taubyte-auth-and-profile`**: stop.  
+- **`tau` / `dream`** still failing after install: stop; log diagnostics to **`.taubyte_ai/logs.txt`**.  
+- **Do not** proceed to cloud / project / resource operations until this gate passes.
