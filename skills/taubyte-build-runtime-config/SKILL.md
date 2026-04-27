@@ -106,6 +106,13 @@ Read **`package.json`** (`scripts.build` or equivalent) and the framework docs t
   cp -r dist/* /out/
   ```
 
+- **Vite + same-origin API** (static site and **`/api/...`** handlers on the **same** configured domain — typical full-stack Taubyte):
+
+  - In **`vite.config.ts`**, use **`envPrefix: ["VITE_", "APP_"]`** when the client reads **`APP_*`** at build time (e.g. optional API base override).
+  - Prefer **`window.location.origin`** as the default API base when unset so the browser hits **same-origin** HTTP functions after deploy.
+  - Document **`APP_API_BASE_URL`** (or equivalent) in **`.env.example`** for Dream/local when the API is on another host or port.
+  - In **config**, attach **website** and **HTTPS functions** to the **same `domains`** entry so relative **`/api/...`** calls resolve.
+
 - **Create React App / `react-scripts`** (output **`build/`**, not `dist/`):
 
   ```bash

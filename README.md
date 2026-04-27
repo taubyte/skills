@@ -89,7 +89,7 @@ See [skills CLI](https://github.com/vercel-labs/skills) for full docs.
 | Goal | Command |
 |------|---------|
 | List skills in this repo (no install) | `npx skills add taubyte/skills --list` |
-| Install one skill globally for Cursor | `npx skills add taubyte/skills --skill taubyte-core-rules --agent cursor --global --copy --yes` |
+| Install one skill globally for Cursor | `npx skills add taubyte/skills --skill taubyte-core-constraints --agent cursor --global --copy --yes` |
 | Install all skills globally for Cursor | `npx skills add taubyte/skills --agent cursor --global --copy --yes` |
 | Link all skills to the **current** editor (global) | `npx skills add taubyte/skills -g --all` |
 | Template command for any repo | `npx skills add owner/repo --agent cursor --global --copy --yes` |
@@ -113,7 +113,6 @@ See [skills CLI](https://github.com/vercel-labs/skills) for full docs.
 | `taubyte-reference-index` | Topic index into deep legacy references for on-demand loading. |
 | `taubyte-context-log` | Auto-maintains per-project context log file to reduce hallucinations. |
 | `taubyte-push-build-verify` | Config/code/website/library push + build/log verification. |
-| `taubyte-dream-local-operations` | Local Dream lifecycle and inject workflows. |
 | `taubyte-hosts-file-editor` | Safe, idempotent hosts-file updates for local `*.localtau` hostname access. |
 | `taubyte-local-host-launch` | Launch and verify Dream local resources by FQDN/port in curl and browser. |
 | `taubyte-remote-cloud-operations` | Remote cloud deployment workflow. |

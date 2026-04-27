@@ -37,7 +37,8 @@ tau --defaults --yes new domain --name <domain> --generated-fqdn --type auto --d
 
 ## Function post-create guardrail
 
-- Immediately after `new function --template empty`, replace scaffold content in `<function_path>/empty.go` with an actual handler implementation before push/test.
+- Immediately after `new function --template empty`, replace scaffold content in **`<function_path>/empty.go` at the function root** (same directory as `go.mod` — **never** under `lib/`) before push/test.
+- **Never** create `lib/`, never relocate `empty.go` into `lib/`, and **never** hand-author **`main.go`** in the function tree. To test the WASM build locally, use the **`taubyte/go-wasi`** Docker command in **`taubyte-go-sdk-constraints`**. See that skill for the full layout rules.
 
 ## Repository binding guardrails (website/library)
 
@@ -72,6 +73,49 @@ tau import library --name <lib>
 - Use `taubyte-build-runtime-config` for `.taubyte/build.sh` and `.taubyte/config.yaml` management.
 - Add runtime variables under `environment.variables` (or resource-equivalent schema) when server-side config is required.
 - For websites, build script must place deployable output in `/out`.
+
+## Config YAML anchors (database, messaging, PubSub)
+
+Illustrative fragments for hand-edited **`config/applications/<app>/...`** (prefer **`tau new ...`** then adjust). Strings must match Go: **`database.New("<match>")`**, **`pubsubnode.Channel("<channel>")`**, and PubSub **`trigger.channel`**.
+
+**Database** (`databases/<name>.yaml`):
+
+```yaml
+match: appdata
+useRegex: false
+access:
+  network: all
+storage:
+  size: 1GB
+replicas:
+  min: 1
+  max: 2
+```
+
+**Messaging** (`messaging/<name>.yaml`):
+
+```yaml
+local: false
+channel:
+  regex: false
+  match: chat
+bridges:
+  mqtt:
+    enable: false
+  websocket:
+    enable: true
+```
+
+**PubSub consumer function** (snippet):
+
+```yaml
+trigger:
+  type: pubsub
+  local: false
+  channel: chat
+execution:
+  call: handleChatEvents
+```
 
 ## Legacy-style interactive note
 

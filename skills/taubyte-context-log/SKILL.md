@@ -34,6 +34,13 @@ For every Taubyte workflow, the agent must create/update a log file inside the c
 9. CLI versions snapshot
    - `tau version`
    - `dream --version || dream --help` (some Dream builds do not expose `--version`)
+10. **Project intent** (required when the user said *new project* or *extend existing*):
+    - `project_intent`: `new` | `extend`
+    - `intended_project_name` (for `new`, the name passed to **`tau new project`** / **`tau select project`**)
+    - `verified_project_after_select`: copy the **`Project`** value from **`tau --json current`** immediately after selection, and note whether it matches `intended_project_name`
+11. **`website_decision`** (when **`taubyte-scope-routing`** applies): `include` | `skip` plus a one-line reason — see *Website when logically appropriate* in that skill.
+12. **`notification_email`**: the value of `notification.email` from `config/config.yaml` (must be a real email, not `""`).
+12. **`notification_email`**: the value of `notification.email` from `config/config.yaml` (must be a real email, not `""`).
 
 ## Build job waiting policy (do not race ahead)
 
