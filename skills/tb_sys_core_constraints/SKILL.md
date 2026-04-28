@@ -14,6 +14,7 @@ description: Non-negotiable Taubyte constraints that prevent config/build/runtim
 5. Use default universe `default` unless user explicitly requests another.
 6. After resource creation, **push config to GitHub** before relying on resource visibility; then wait for cloud builds (remote via webhook; Dream via inject).
 7. After code changes, **push code to GitHub** and verify builds/logs (no local run/build unless explicitly requested).
+8. **Domains must be CLI-managed:** never create, edit, or delete domains by manually editing YAML. Always use `tau new domain ...` / `tau delete domain ...` / query commands. Do not “hand-create” `domains/*.yaml` or patch existing domain YAML by hand.
 8. Never set function timeout to `0`; use valid durations (`30s`, `1m`, etc.).
 9. HTTP functions: one function per path+method; never comma-separated methods.
 10. For functions/websites in automation, use empty template; for Go functions, include `--language Go`.

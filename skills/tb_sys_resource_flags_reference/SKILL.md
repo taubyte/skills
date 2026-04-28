@@ -14,6 +14,8 @@ Use this as the canonical flag catalog to avoid duplicating long flag lists in o
 
 ## Common create commands (non-interactive)
 
+**Domains policy:** domains are **CLI-managed only**. Do not create or modify domains by hand-editing YAML; always use `tau new domain ...` / `tau delete domain ...` / `tau query domain ...`.
+
 ```bash
 tau --defaults --yes new domain --name <domain> --fqdn <fqdn> --type auto --description "<desc>"
 tau --defaults --yes new database --name <db> --match <matcher> --min 1 --max 2 --size 1GB
