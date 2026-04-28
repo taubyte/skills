@@ -5,6 +5,8 @@ description: Pushes project configuration only with a non-interactive message an
 
 ## Command card
 
+**Policy:** Do **not** use this by default. Default workflow is **`git push` to GitHub** and then **wait for cloud builds** (remote) or **`dream inject push-specific`** (Dream) per `tb_sys_push_build_verify`.
+
 **Preconditions:** `notification.email` set; resources defined; context verified with `tau --defaults --yes json current`.
 
 **Command:**

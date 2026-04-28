@@ -65,7 +65,7 @@ description: Selects cloud context. If no FQDN is provided, always use Dream loc
 
 ## Dream deployment prerequisites (local)
 
-- Before `dream inject push-all` / `push-specific`, ensure Docker is running:
+- Before `dream inject push-specific`, ensure Docker is running:
   ```bash
   docker info
   ```

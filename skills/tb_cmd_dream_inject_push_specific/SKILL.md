@@ -1,11 +1,11 @@
 ---
 name: tb_cmd_dream_inject_push_specific
-description: dream inject push-specific for website/library repos after push-all.
+description: dream inject push-specific to trigger Dream builds after GitHub push (default local action).
 ---
 
 ## Command card
 
-**Preconditions:** `tb_cmd_dream_inject_push_all` succeeded when both apply. Docker up. Paths/ids match project.
+**Preconditions:** Docker up. Universe exists. The relevant repo code was pushed to GitHub. Repository id/fullname flags match the Taubyte project config.
 
 **Command:**
 

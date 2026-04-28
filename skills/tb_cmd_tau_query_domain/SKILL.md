@@ -13,7 +13,7 @@ description: Queries a domain resource by name to retrieve effective FQDN and re
 tau --defaults --yes query domain --name <domain-name>
 ```
 
-**Postconditions:** Use FQDN for hosts + curl (see `tb_sys_local_host_launch`).
+**Postconditions:** Use the FQDN for routing/verification. If (and only if) the user explicitly requested local hostname access, see `tb_sys_local_host_launch` / `tb_sys_hosts_file` for command/URL guidance.
 
 **Scope note:** If the domain is project-scoped and query fails while an application is selected, clear app scope and retry:
 

@@ -37,7 +37,7 @@ tau --defaults --yes new domain --name <domain> --generated-fqdn --type auto --d
 ## Function post-create guardrail
 
 - Immediately after `new function --template empty`, replace scaffold content in **`<function_path>/empty.go` at the function root** (same directory as `go.mod` — **never** under `lib/`) before push/test.
-- **Never** create `lib/`, never relocate `empty.go` into `lib/`, and **never** hand-author **`main.go`** in the function tree. To test the WASM build locally, use the **`taubyte/go-wasi`** Docker command in **`tb_sdk_go_*`**. See that skill for the full layout rules.
+- **Never** create `lib/`, never relocate `empty.go` into `lib/`, and **never** hand-author **`main.go`** in the function tree. Do **not** attempt local builds/runs by default; only do local build verification if the user explicitly requests it, and then follow the dedicated `tb_sdk_go_*` policy.
 
 ## Repository binding guardrails (website/library)
 

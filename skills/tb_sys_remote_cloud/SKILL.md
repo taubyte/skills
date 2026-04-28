@@ -22,21 +22,21 @@ description: Remote cloud workflow with explicit fqdn selection and deployment v
    tau --defaults --yes clear application
    tau --defaults --yes json current
    ```
-4. Run resource and push workflows (non-interactive):
-   ```bash
-   tau --defaults --yes push project --config-only --message "<message>"
-   tau --defaults --yes push project --code-only --message "<message>"
-   ```
-5. For website/library push, select app and push with message:
-   ```bash
-   tau --defaults --yes select application --name <app>
-   tau --defaults --yes push website --name <website> --message "<message>"
-   tau --defaults --yes push library --name <library> --message "<message>"
-   ```
-6. Verify build jobs and logs:
+4. Push to GitHub (default):
+   - Commit + push the **config repo**, **code repo**, and any **website/library repos** that changed.
+   - Remote clouds pick up changes via **GitHub webhooks** and build in the cloud.
+5. Verify build jobs and logs:
    ```bash
    tau --defaults --yes query builds --since 1h
    tau --defaults --yes query logs --jid <job_id>
+   ```
+6. Optional (explicit-only): if the user insists on using `tau push ...` commands instead of `git push`, run:
+   ```bash
+   tau --defaults --yes push project --config-only --message "<message>"
+   tau --defaults --yes push project --code-only --message "<message>"
+   tau --defaults --yes select application --name <app>
+   tau --defaults --yes push website --name <website> --message "<message>"
+   tau --defaults --yes push library --name <library> --message "<message>"
    ```
 7. If `tau query builds` is empty on remote, verify via webhook + console:
    - GitHub webhook deliveries for the pushed repository.

@@ -20,8 +20,8 @@ Optional: add vendored markdown under `<skills_root>/references/` and extend thi
 ## Dream/local operations
 
 - Dream readiness and selection: `tb_sys_cloud_selection`
-- Inject sequence: `tb_wf_dream_inject_and_verify` and `tb_cmd_dream_inject_push_all` / `tb_cmd_dream_inject_push_specific`
-- Hosts + URL verify: `tb_sys_hosts_file`, `tb_sys_local_host_launch`
+- Inject sequence (Dream build trigger): `tb_wf_dream_inject_and_verify` and `tb_cmd_dream_inject_push_specific`
+- Local URL/hosts verification is **explicit-only** and should not run automatically.
 
 ## SDK correctness
 

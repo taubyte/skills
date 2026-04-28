@@ -41,9 +41,10 @@ Use this skill when:
 
 ## Automation policy
 
-- Always attempt automatic update first (idempotent write, no duplicates).
+- Do **not** edit hosts automatically unless the user explicitly asked for hostname-based local access.
+- If the user explicitly asked, attempt automatic update first (idempotent write, no duplicates).
 - On Windows, try elevated write path first; if blocked, switch to manual fallback immediately with exact lines.
-- After update attempt (success or fallback), run verification curl checks so execution can continue.
+- Do **not** run `curl` or open a browser automatically; provide commands/URLs for the user to run if they asked for local verification.
 
 ## Safety rules
 
@@ -54,7 +55,7 @@ Use this skill when:
 
 ## Verification
 
-Run at least one check after edits:
+If (and only if) the user asked for local verification, provide at least one check command:
 
 ```bash
 curl "http://<fqdn>:<port>/"
@@ -66,7 +67,7 @@ Or verify direct routing without hosts dependency:
 curl --resolve "<fqdn>:<port>:127.0.0.1" "http://<fqdn>:<port>/"
 ```
 
-If using browser, open:
+If using browser (explicit request), provide the URL:
 
 ```text
 http://<fqdn>:<port>/

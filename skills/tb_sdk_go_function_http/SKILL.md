@@ -19,6 +19,6 @@ description: Go Taubyte HTTP handlers: empty.go layout, Headers/Query/Return ord
 ## Build/runtime alignment
 
 - For remote/Dream project pushes, prefer `.taubyte/config.yaml` image `taubyte/go-wasi:latest`.
-- For local-only Docker validation, use `tb_sdk_go_local_wasm_docker` recipe (`taubyte/go-wasi:v2`).
+- Do **not** perform local Docker validation by default. Only if the user explicitly requests a local build/verify, use `tb_sdk_go_local_wasm_docker` (`taubyte/go-wasi:v2`).
 
 Global rules: `tb_sys_core_constraints`.

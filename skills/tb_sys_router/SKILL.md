@@ -21,7 +21,7 @@ Load **one** primary `tb_wf_*` for the user goal, then follow its ordered skill 
 10. Relevant `tb_sdk_go_*` when editing Go/WASM
 11. `tb_sys_build_runtime_config` (when `.taubyte/*` or Dream inject applies)
 12. `tb_sys_push_build_verify` then Dream **or** remote path:
-    - Dream: `tb_wf_dream_inject_and_verify` (and optional `tb_wf_local_url_verify`)
+    - Dream: `tb_wf_dream_inject_and_verify`
     - Remote: `tb_sys_remote_cloud`
 13. `tb_sys_debug_recovery` on failure
 
@@ -35,7 +35,6 @@ Load **one** primary `tb_wf_*` for the user goal, then follow its ordered skill 
 | Dream inject only | `tb_wf_dream_inject_and_verify` |
 | Push config then code | `tb_wf_push_config_then_code` (optional `tb_cmd_tau_push_project_full` when user insists on one push) |
 | Go WASM / SDK coding only | `tb_wf_go_wasm_authoring` |
-| Open local URL / curl | `tb_wf_local_url_verify` |
 | Remote FQDN cloud | `tb_wf_remote_deploy` |
 | Self-host cloud (Spore) | `tb_sys_spore_drive` |
 
@@ -43,9 +42,9 @@ Load **one** primary `tb_wf_*` for the user goal, then follow its ordered skill 
 
 Before **import**, **push**, or **`tau new`** resources: `tb_cmd_tau_new_project` → **immediately** `tb_cmd_tau_select_project` (same name) → `tb_cmd_tau_json_current` — **Project** must match intended name. **Never** skip `select project` after `new project` (global profile; not the open folder). Log in `tb_sys_context_log`. After multi-app resource creation, **`tau clear application`** + **`tau select project`** again so the user’s default `tau json current` shows the new project.
 
-## Optional local runtime
+## Local execution / local builds (explicit only)
 
-After deploy, if user wants local URL: `tb_wf_local_url_verify` (`tb_sys_hosts_file` → `tb_sys_local_host_launch`).
+Do **not** automatically try to run, curl, open, or “test” Taubyte functions/libraries locally. Only load local execution or local verification workflows when the user **explicitly** asks to do so.
 
 ## Deep docs
 

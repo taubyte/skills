@@ -1,6 +1,6 @@
 ---
 name: tb_cmd_dream_inject_push_all
-description: dream inject push-all from project root.
+description: dream inject push-all (explicit-only; do not use unless user asks).
 ---
 
 ## Command card
@@ -13,7 +13,9 @@ description: dream inject push-all from project root.
 dream inject push-all --path <absolute_project_root> --project-id <project_id> --universe <universe_name>
 ```
 
-**Postconditions:** Often run before `tb_cmd_dream_inject_push_specific`; poll builds/logs.
+**Postconditions:** Poll builds/logs.
+
+**Policy:** Do **not** run `push-all` by default. The default local Dream build trigger is `dream inject push-specific` after GitHub push. Use `push-all` only when the user explicitly asks for a full sync or when a documented Dream workflow requires it for their specific setup.
 
 **Validation (required):**
 - Do not trust exit code alone (can be `0` on failure).

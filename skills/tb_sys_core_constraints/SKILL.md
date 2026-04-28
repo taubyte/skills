@@ -12,8 +12,8 @@ description: Non-negotiable Taubyte constraints that prevent config/build/runtim
 3. For Dream/local, never run backend-contacting `tau` commands before Dream is up and universe exists.
 4. Use `dream` commands directly; never use `tau dream`.
 5. Use default universe `default` unless user explicitly requests another.
-6. After resource creation, push config (`tau push project --config-only`) before relying on resource visibility.
-7. After code changes, push code (`tau push project --code-only`) and verify builds/logs.
+6. After resource creation, **push config to GitHub** before relying on resource visibility; then wait for cloud builds (remote via webhook; Dream via inject).
+7. After code changes, **push code to GitHub** and verify builds/logs (no local run/build unless explicitly requested).
 8. Never set function timeout to `0`; use valid durations (`30s`, `1m`, etc.).
 9. HTTP functions: one function per path+method; never comma-separated methods.
 10. For functions/websites in automation, use empty template; for Go functions, include `--language Go`.
@@ -27,7 +27,7 @@ description: Non-negotiable Taubyte constraints that prevent config/build/runtim
     - use `--generate-repository` with deterministic `--repository-name`, or
     - use explicit existing `--repository-name`/`--repository-id`.
 18. After creating website/library, verify repository binding in config (`websites/*.yaml` or `libraries/*.yaml`) before pushing.
-19. **Go functions:** **`empty.go` stays at the function root** next to `go.mod`. **Never** manually create **`lib/`**, never move `empty.go` under `lib/`, and **never** hand-author **`main.go`** in the function folder to fix builds. For local WASM verification, use the **`taubyte/go-wasi:v2`** Docker recipe in **`tb_sdk_go_local_wasm_docker`** — not `lib/` + `main.go` shims.
+19. **Go functions:** **`empty.go` stays at the function root** next to `go.mod`. **Never** manually create **`lib/`**, never move `empty.go` under `lib/`, and **never** hand-author **`main.go`** in the function folder to fix builds. Do **not** perform local WASM verification unless the user explicitly asked for a local build/verify; if they did, use the **`taubyte/go-wasi:v2`** Docker recipe in **`tb_sdk_go_local_wasm_docker`** — not `lib/` + `main.go` shims.
 20. **New project:** If the user asked to **create a new project**, run **`tau new project`**, then **`tau --defaults --yes select project --name <same>`** as the **immediate** next step (do not trust “Selected project” from `new project` alone — profile selection is global). Then **`tau --defaults --yes json current`** and confirm **`Project`** matches the new name **before** any **`tau import`**, **`tau push project`**, or **`tau new`** resource command. Stale selection is the usual cause of “imports pulling the wrong GitHub project” and of **`tau json current`** showing a different project than the repo you just created. After multi-app setup, **`tau clear application`** then **`tau select project --name <name>`** again before ending the turn (`tb_cmd_tau_select_project`).
 21. **Project config notification email:** ensure `config/config.yaml` has a valid `notification.email` (not `""`). Prefer `git config user.email`; if unavailable, ask the user for the email. Write it as a plain YAML value (no quotes) to avoid `mail: no address` config-compiler failures.
 22. **Push ordering:** always push **project config** first and **wait for the latest Config build to succeed** before pushing **website/library** code that depends on those resources being present in config.

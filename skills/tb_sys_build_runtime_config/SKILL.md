@@ -1,6 +1,6 @@
 ---
 name: tb_sys_build_runtime_config
-description: Manages server-side build/runtime via `.taubyte/build.sh` and `.taubyte/config.yaml`; env vars live in build.sh only. Website build.sh is stack-specific (Vite vs CRA/React, etc.). Documents GitHub → webhook vs Dream inject (push-all / push-specific).
+description: Manages server-side build/runtime via `.taubyte/build.sh` and `.taubyte/config.yaml`; env vars live in build.sh only. Website build.sh is stack-specific (Vite vs CRA/React, etc.). Documents GitHub → webhook vs Dream inject (push-specific).
 ---
 
 # Build runtime config
@@ -19,14 +19,13 @@ Use whenever a resource needs **server-side build logic**, **runtime environment
    After the push, the cloud is reached from GitHub (webhook). **Builds trigger automatically** — no extra inject step on your machine.
 
 3. **Local Dream**  
-   GitHub **cannot** call into your laptop, so **webhooks do not drive Dream the same way**. After pushing to GitHub you must **trigger the build from the local machine** using **Dream inject**:
+   GitHub **cannot** call into your laptop, so **webhooks do not drive Dream**. After pushing to GitHub, trigger the build on the local Dream universe using **Dream inject**:
 
    | Command | Use for |
    |---------|--------|
-   | **`dream inject push-all`** | **Config and code** for the whole project — run from the **project root** (`--path` = absolute project root). |
-   | **`dream inject push-specific`** | Individual **resource repos** that need their own inject after a full sync — e.g. **libraries** and **websites** (per-resource repo path and identifiers). |
+   | **`dream inject push-specific`** | Trigger a build for an individual **resource repo** (website/library) in Dream after the code is pushed to GitHub. |
 
-   Always run **`push-all`** successfully **before** **`push-specific`** when both apply. Universe, Docker, and flag details (e.g. `--rid`, `--fn` for websites) live in **`tb_wf_dream_inject_and_verify`**.
+   **Default policy:** do **not** run local builds/tests. The only local action is **`dream inject push-specific`** (Dream build trigger) unless the user explicitly requests local build/verification.
 
 ---
 
@@ -122,7 +121,7 @@ Read **`package.json`** (`scripts.build` or equivalent) and the framework docs t
   cp -r build/* /out/
   ```
 
-- **Other stacks** (Next, Nuxt, custom webpack, etc.): run that project’s install + production build commands, then **`cp -r <framework-output-dir>/* /out/`** using the directory **that tool** actually generates (check docs and a local build once if unsure).
+- **Other stacks** (Next, Nuxt, custom webpack, etc.): run that project’s install + production build commands, then **`cp -r <framework-output-dir>/* /out/`** using the directory **that tool** documents. If you are unsure, **do not guess** — ask the user for the repo’s intended build output directory or rely on existing project docs/config.
 
 ---
 
@@ -131,6 +130,8 @@ Read **`package.json`** (`scripts.build` or equivalent) and the framework docs t
 - **Env vars:** declare and use them in **`.taubyte/build.sh`** only; do **not** put runtime env declarations in **`.taubyte/config.yaml`** for this purpose.
 - **Websites:** tailor **`build.sh`** to the **actual** framework and build output (e.g. **Vite → `dist/`**, **CRA → `build/`**); never copy a Vite-only script onto a React-CRA repo without changing paths and commands.
 - Do not push to GitHub before validating **`.taubyte/build.sh`** and **`.taubyte/config.yaml`**.
-- After changing build/config, **remote cloud:** rely on webhook-driven builds after push; **Dream:** run **`dream inject push-all`** and, for **website/library** resource repos, **`dream inject push-specific`** as required, then verify logs/build per **`tb_sys_push_build_verify`**.
+- After changing build/config, **always push to GitHub**. Then:
+  - **Remote cloud:** wait for webhook-driven cloud builds and verify via `tb_sys_push_build_verify`.
+  - **Dream:** run **`dream inject push-specific`** for the relevant website/library repo(s), then verify via `tb_sys_push_build_verify`.
 - Document notable env or build assumptions in the **context log** (`tb_sys_context_log`).
 - For Go compile issues, validate handler code against **`tb_sdk_go_*`**.

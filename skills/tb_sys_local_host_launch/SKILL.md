@@ -7,10 +7,7 @@ description: Launch and verify Dream local resources by hostname using hosts map
 
 ## When to use
 
-Use this skill after domain/resource creation in Dream/local when the goal is to:
-- access website/function endpoints by FQDN
-- open resources in browser using hostnames
-- validate host-based routing
+Use this skill **only when the user explicitly requests local execution/verification** (curl, browser open, hostname routing). Default Taubyte workflow is **not** to run anything locally.
 
 ## Prerequisites
 
@@ -29,37 +26,31 @@ Use this skill after domain/resource creation in Dream/local when the goal is to
    ```
 3. Ensure hosts mappings exist for each FQDN:
    - `127.0.0.1 <fqdn>`
-   - run `tb_sys_hosts_file` automatically (do not wait for user prompt)
-4. Ensure local deploy trigger is executed for Dream/local:
+   - do not modify hosts automatically unless the user explicitly requests it
+4. Ensure Dream build trigger is executed for Dream/local (no local build/run):
    ```bash
    docker info
-   dream inject push-all --universe default
+   dream inject push-specific --universe default ...
    ```
-   - if `docker info` fails, stop and report Docker as runtime blocker
+   - If the user did not explicitly ask for local verification, stop after inject + build/log verification (do not curl/open).
 5. Discover serving port:
    - Usually from substrate:
      ```bash
      dream status substrate
      ```
    - If gateway is used in the universe, use its HTTP port from `dream status universe <name>`.
-6. Validate by hostname:
-   ```bash
-   curl "http://<fqdn>:<port>/<path>"
-   ```
-7. If hosts edit is not available, fallback validation:
-   ```bash
-   curl --resolve "<fqdn>:<port>:127.0.0.1" "http://<fqdn>:<port>/<path>"
-   ```
-8. For browser launch:
-   - open `http://<fqdn>:<port>/<path>`
+6. If (and only if) the user explicitly asked to validate locally, provide **commands** rather than executing them:
+   - `curl "http://<fqdn>:<port>/<path>"`
+   - or `curl --resolve "<fqdn>:<port>:127.0.0.1" "http://<fqdn>:<port>/<path>"`
+   - browser URL: `http://<fqdn>:<port>/<path>`
 
 ## Output contract
 
 - Always return:
   - exact website URL(s),
   - exact function URL(s),
-  - one ready-to-run curl per endpoint,
-  - whether hosts mapping was auto-applied or requires manual admin edit.
+  - one ready-to-run curl per endpoint (only when local verification was explicitly requested),
+  - whether hosts mapping requires manual admin edit (only when the user asked for hosts-based access).
 
 ## Notes
 
