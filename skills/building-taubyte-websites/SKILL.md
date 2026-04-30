@@ -131,6 +131,7 @@ curl -i -H "Host: <fqdn>:<gateway_port>" "http://127.0.0.1:<gateway_port>/"
 - **Typos in `.taubyte/config.yaml` can silently break remote builds.** Example: `environment:` misspelled as `enviroment:` can cause the cloud builder to ignore config or fail early.
 - **Stack-specific env**: don't put runtime env in `config.yaml`'s wrong section; declare build env in `build.sh` only.
 - **Per-stack output dirs**: copy the **stack's output dir contents** to `/out`, not the dir itself. `cp -a dist/. /out/` is right; `cp -a dist /out/` puts files under `/out/dist/`.
+- **Corrupted `build.sh` (shell mixed with HTML).** A bad edit can merge **`index.html` (or other markup) into `.taubyte/build.sh`**, which then fails to parse as shell. **Fix:** remove the broken file and recreate a **minimal** script — for a single static page, `mkdir -p /out` then `cp index.html /out/`, then `chmod +x .taubyte/build.sh`. Validate with `bash -n .taubyte/build.sh` before push.
 
 ## Related skills
 

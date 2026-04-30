@@ -78,6 +78,10 @@ Each rule is a one-liner. The link points to the skill that explains and enforce
 ## Platform / shell
 
 31. **Git Bash on Windows**: prefix path-like flags with `MSYS_NO_PATHCONV=1` to avoid path mangling on `--paths`, `--protocol`, etc. → [creating-taubyte-resources](../creating-taubyte-resources/SKILL.md)
+32. **Inline function disk path must match the active builder.** An extra `applications/` segment (or the inverse) makes builds fail with **`.taubyte` not found** under the path the job reports. Align `code/.../functions/<fn>/` to that path before changing anything else. → [creating-taubyte-resources](../creating-taubyte-resources/SKILL.md)
+33. **PUT may not route like GET/DELETE** even when YAML declares PUT — the edge can return **`no HTTP match for method PUT`** while other methods work; logs may be incomplete. Prefer a **dedicated POST route** (e.g. `/api/resource/update`) as a separate function until routing is confirmed. → [authoring-taubyte-function-types](../authoring-taubyte-function-types/SKILL.md)
+34. **Keep scaffold `empty.go`** (and matching `FILENAME` in `build.sh`) unless you have an image-verified recipe — renaming to `lib.go` / changing the entry file without full alignment breaks TinyGo and can drop **`artifact.wasm`**. → [configuring-taubyte-build-runtime](../configuring-taubyte-build-runtime/SKILL.md), [writing-taubyte-functions](../writing-taubyte-functions/SKILL.md)
+35. **Website `.taubyte/build.sh` is executable shell only** — never paste HTML or other markup into it. A merged file breaks the script; replace with a minimal `mkdir -p /out` + copy pattern. → [building-taubyte-websites](../building-taubyte-websites/SKILL.md)
 
 ## Pre-push checklist (copy into the session)
 
@@ -93,6 +97,7 @@ Pre-push audit:
 - [ ] Push order: config first, then code/website/library (rule 21)
 - [ ] Dream: bootstrap with push-all done, push-specific uses long flags + universe last (rules 23, 24)
 - [ ] Remote: id alignment OK, no dream inject (rules 26, 27)
+- [ ] If remote/Dream complained about `.taubyte` path: function dir matches log (rule 32); website build.sh is pure shell (rule 35)
 ```
 
 ## Related skills

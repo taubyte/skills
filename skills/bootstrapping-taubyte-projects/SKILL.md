@@ -148,6 +148,7 @@ New-project progress:
 
 ## Gotchas
 
+- **`tau --json current` shows a `Project` but this cloud has no clone yet**: the CLI can display a project name from profile/history while the selected cloud still lacks the GitHub **config + code** pair. Run **`tau new project <snake_case_name> --location ...`** on that cloud (or **`tau import project ...`** for an existing pair), then verify `Project` and that `config/` + `code/` exist under `--location`.
 - **Selection drift after `new project`**: even though `tau new project` prints `Selected project:`, the global profile selection can still point at a previous project. Always re-run `tau select project --name <same>` and verify before any `tau import`/`tau push`/`tau new` resource.
 - **Dashes break validation.** Re-emphasized because every other failure mode is downstream of this.
 - **Empty `notification.email`.** `config/config.yaml` should have a real email under `notification.email`; an empty value can fail the config-compiler later with `mail: no address`. Prefer `git config user.email`.

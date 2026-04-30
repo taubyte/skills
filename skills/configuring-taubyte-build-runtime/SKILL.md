@@ -83,7 +83,7 @@ What this does:
 
 - `export PATH=...` makes **`taubyte/go-wasi:latest`** reliably find **`go`** and **`tinygo`** when the shell is not a full login environment (matches what [verifying-taubyte-functions](../verifying-taubyte-functions/SKILL.md) does inside Docker verify).
 - `. /utils/wasm.sh` sources the toolchain helpers provided by the `taubyte/go-wasi` image.
-- `build "${FILENAME}"` invokes the helper that compiles the function into WASM.
+- `build "${FILENAME}"` invokes the helper that compiles the function into WASM. **`FILENAME`** must name the **actual entry `.go` file** at the function root (the CLI scaffold uses **`empty.go`**). Renaming the file without updating **`FILENAME`** (or renaming `empty.go` → `lib.go` hoping to fix `package lib` noise) often yields **TinyGo / verify errors** or **missing `artifact.wasm`** on remote builds — **stay on `empty.go`** unless you have an end-to-end verified change for both the file name and `build.sh`.
 - The script writes the build's exit code to `/out/ret-code` and exits with the same code (Taubyte uses both signals).
 
 ## Library — `build.sh` and `config.yaml`
@@ -196,6 +196,8 @@ Pre-push validation progress:
 
 | Symptom | Likely cause | Fix |
 | --- | --- | --- |
+| Remote function build: `.taubyte` not found under `.../<app>/functions/<name>` | Sources live under **`code/applications/<app>/functions/...`** but the builder expects **`code/<app>/functions/...`** (or the path in the log differs) | Move the function folder to the path shape in the error; see [creating-taubyte-resources](../creating-taubyte-resources/SKILL.md) |
+| Function build: TinyGo errors / no `artifact.wasm` after renaming `empty.go` | **`FILENAME`** / entry file / image expectations out of sync | Revert to scaffold **`empty.go`** and `build "${FILENAME}"` with default `FILENAME`; keep `export PATH=...` for go/tinygo |
 | Website "deploys" but serves blank / 404 | `/out` is empty after build.sh | Confirm the framework output dir; copy from there into `/out` |
 | Bundler env value is empty in browser | Var declared in `config.yaml` instead of `build.sh` | Move to `export NAME=value` in `build.sh` |
 | Function builds but old behavior persists | Not pushed / not injected on Dream | `git push` then `dream inject push-specific` (see [triggering-dream-builds](../triggering-dream-builds/SKILL.md)) |
@@ -211,6 +213,7 @@ Pre-push validation progress:
 - **Empty `build.sh`** is the silent killer for `--template empty` resources. Always populate before push.
 - **Forgetting `chmod +x build.sh`** can cause "permission denied" on some build images. Templates usually mark it executable; new files you create may need it.
 - **Local verify image drift.** If `config.yaml` says `:v2` but you run the Docker WASM recipe with `:latest`, you may not reproduce a cloud failure locally.
+- **Editing `build.sh` beside `index.html`.** A mistaken paste can merge **HTML into the shell script** — especially on websites. The script must stay valid bash only; see [building-taubyte-websites](../building-taubyte-websites/SKILL.md).
 
 ## Related skills
 

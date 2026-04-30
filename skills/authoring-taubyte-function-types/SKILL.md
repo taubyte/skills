@@ -111,6 +111,7 @@ See [writing-taubyte-functions](../writing-taubyte-functions/SKILL.md) for the f
 
 - **One function per `(path, method)` combination** — never comma-separated methods. Create separate function resources for each method on the same path.
 - Multiple `--paths` on the **same** function-and-method are allowed (the function handles all listed paths).
+- **PUT vs other methods in practice:** YAML may list **`PUT`** for a path while **GET** / **DELETE** behave, yet the edge still returns **`no HTTP match for method PUT`** (remote build logs for that function can also look incomplete). When that happens, ship updates on a **new path + POST** (e.g. **`POST /api/todo/update`**) as its own function resource and point the client at POST — do not assume PUT will deploy identically to GET without a live probe.
 
 ## `--type pubsub`
 
@@ -297,6 +298,7 @@ Function-type authoring progress:
 - **Multiple methods via comma in `--method`** isn't supported — split into separate function resources per method.
 - **`--type http` on a remote cloud**: usually rejected at deploy because the cloud's gateway expects TLS. Use `https` for remote.
 - **`--call` not exported in code**: function compiles but the cloud can't dispatch — produces "function not found"-style runtime errors. Match `//export <name>` to `execution.call` exactly.
+- **`PUT` not honored at the gateway** while other methods on the same URL work: see the **PUT vs other methods** note under https/http rules — use a **POST** update route as the reliable workaround.
 
 ## Related skills
 

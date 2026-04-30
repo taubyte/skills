@@ -29,6 +29,8 @@ Key constraints:
 
 **Anti-pattern:** switching the handler file to **`package main`** to "fix" compile errors when the real problem is **build hygiene** (generated `lib/`, `main.go`, bad `PATH` in `.taubyte/build.sh`, etc.). Stay on **`package lib`** (or another non-`main` name) per the constraints above; fix the toolchain and repo state instead — see [verifying-taubyte-functions](../verifying-taubyte-functions/SKILL.md) and [configuring-taubyte-build-runtime](../configuring-taubyte-build-runtime/SKILL.md).
 
+**Entry file name:** the scaffold uses **`empty.go`** at the function root, and **`.taubyte/build.sh`** calls **`build "${FILENAME}"`** for that file. Renaming to **`lib.go`** (or changing **`FILENAME`**) without a fully verified `taubyte/go-wasi` workflow often **breaks remote builds** (TinyGo / verify noise, missing **`artifact.wasm`**). Prefer **`package lib` in `empty.go`** and a **`build.sh`** that exports **`PATH`** for `go`/`tinygo` then **`build empty.go`** (or `build "${FILENAME}"` with **`FILENAME=empty.go`**) — see [configuring-taubyte-build-runtime](../configuring-taubyte-build-runtime/SKILL.md).
+
 ## Module + imports
 
 `go.mod` should depend on:
