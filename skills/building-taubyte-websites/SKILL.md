@@ -128,6 +128,7 @@ curl -i -H "Host: <fqdn>:<gateway_port>" "http://127.0.0.1:<gateway_port>/"
 
 - **Empty `/out` after build = blank cloud** (or 404). Always confirm `cp` / `cp -a` / `mv` actually populated `/out`.
 - **`.taubyte/build.sh` empty** is a common failure when a site was created with `--template empty` and never edited — it builds "successfully" but produces nothing.
+- **Typos in `.taubyte/config.yaml` can silently break remote builds.** Example: `environment:` misspelled as `enviroment:` can cause the cloud builder to ignore config or fail early.
 - **Stack-specific env**: don't put runtime env in `config.yaml`'s wrong section; declare build env in `build.sh` only.
 - **Per-stack output dirs**: copy the **stack's output dir contents** to `/out`, not the dir itself. `cp -a dist/. /out/` is right; `cp -a dist /out/` puts files under `/out/dist/`.
 

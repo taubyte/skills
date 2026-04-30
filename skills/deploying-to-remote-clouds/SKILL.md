@@ -123,6 +123,22 @@ Empty-builds diagnosis progress:
 
 GitHub's "Recent Deliveries" panel shows the actual webhook payload and the cloud's HTTP response — this is the source of truth when "did the cloud see this push?" is the question.
 
+### Remote website/library gotchas (common “silent deploy” causes)
+
+- **Repo not registered on that cloud**: run `tau import website <site>` / `tau import library <lib>` once on the selected remote cloud.
+- **Duplicate GitHub webhooks** (from repeated imports): delete repo hooks and re-import once to recreate a single clean hook.
+- **Strict website routing**: for root hosting ensure website `paths` includes exactly `"/"` (route matching is strict).
+- **Builder config typos**: `.taubyte/config.yaml` must use `environment:` (not `enviroment:`); typos can make builds look “ignored”.
+
+### If `tau query builds` is empty but you’re sure webhooks delivered
+
+`tau query builds` can be incomplete or misleading on some remote clouds. In that case:
+
+- fetch the **job id** from the cloud’s jobs service (Patrick), then
+- pull logs directly with `tau query logs --jid <jobid>`.
+
+Treat **job logs** as the deploy truth source, not “push succeeded”.
+
 ## Generated domains rule (remote vs Dream)
 
 `tau new domain --generated-fqdn` produces a hostname under the **currently selected cloud's** generated suffix. On Dream the suffix is `.<universe>.localtau`. On a remote cloud it's that cloud's configured generated TLD.

@@ -59,6 +59,17 @@ tau --defaults --yes push website <site_name>   -m "<message>"
 tau --defaults --yes push library <lib_name>    -m "<message>"
 ```
 
+### Remote-cloud note (registration + hooks)
+
+On remote clouds, a website/library repo may need to be **imported/registered** on that cloud before pushes reliably trigger builds:
+
+```bash
+tau --defaults --yes import website <site_name>
+tau --defaults --yes import library <lib_name>
+```
+
+If builds are "silent" after pushes, check GitHub webhooks. Repeated imports can create **duplicate webhooks**; if needed, delete all hooks on the repo and re-import once to recreate a single clean hook.
+
 ## Push ordering rule
 
 When you've added or edited resources, **push config first** and wait for the cloud's config build to succeed before pushing website/library code that depends on those resources. Otherwise the website/library build can fail with "resource not found" or build into a stale config.

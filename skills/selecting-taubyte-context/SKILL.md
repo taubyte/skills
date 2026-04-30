@@ -153,6 +153,7 @@ A push can target the wrong project when an old selection persists from a prior 
 - **Profile selection is global.** A teammate's terminal, a different session, or `tau new project` itself can leave you pointing somewhere unexpected. The only safe pattern is verify-on-each-mutation.
 - **Application bleeds into project ops.** If an application is selected, `tau new domain|website|library` can interpret commands in the app scope. Clear it for project-level work.
 - **Dream universes vs remote fqdns are mutually exclusive.** Picking one replaces the other.
+- **OAuth login can reset selection.** After `tau login --new ...`, re-check `tau --defaults --yes json current` and re-run `tau select cloud ...` + `tau select project ...` before pushing/querying.
 
 ## Related skills
 

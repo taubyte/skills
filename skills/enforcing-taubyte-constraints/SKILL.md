@@ -73,10 +73,11 @@ Each rule is a one-liner. The link points to the skill that explains and enforce
 27. **Project-id alignment**: `config/config.yaml` `id:` must equal the cloud's canonical project id, or every push fails with `project ids not equal`. → [deploying-to-remote-clouds](../deploying-to-remote-clouds/SKILL.md)
 28. **Generate domains only while `Cloud Type: remote`** (or the right Dream universe). The generated TLD is per-cloud. → [deploying-to-remote-clouds](../deploying-to-remote-clouds/SKILL.md)
 29. **Use `--type https` (not `http`) for remote functions.** Remote gateways expect TLS. → [authoring-taubyte-function-types](../authoring-taubyte-function-types/SKILL.md)
+30. **Remote website/library builds require registration + clean hooks.** If remote builds are silent: `tau import website|library <name>` on that cloud, ensure a single GitHub webhook (dedupe if needed), then push a commit and verify via job logs. → [deploying-to-remote-clouds](../deploying-to-remote-clouds/SKILL.md), [pushing-taubyte-projects](../pushing-taubyte-projects/SKILL.md)
 
 ## Platform / shell
 
-30. **Git Bash on Windows**: prefix path-like flags with `MSYS_NO_PATHCONV=1` to avoid path mangling on `--paths`, `--protocol`, etc. → [creating-taubyte-resources](../creating-taubyte-resources/SKILL.md)
+31. **Git Bash on Windows**: prefix path-like flags with `MSYS_NO_PATHCONV=1` to avoid path mangling on `--paths`, `--protocol`, etc. → [creating-taubyte-resources](../creating-taubyte-resources/SKILL.md)
 
 ## Pre-push checklist (copy into the session)
 

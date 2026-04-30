@@ -49,12 +49,13 @@ What happens:
 
 - `tau` prints a `console.taubyte.com/oauth/...` URL.
 - `tau` starts a local callback server on `http://127.0.0.1:<port>`.
-- Open the URL in a browser, authorize, and let the redirect complete.
+- **User or ai must open/click that URL in a browser**, authorize, and let the redirect complete back to `127.0.0.1`. Until that happens, downstream `tau push/query/import` work will keep failing.
 
 Caveats observed:
 
 - In strict non-interactive environments this can fail with `cannot prompt: non-interactive mode`. Run it interactively the first time.
 - If the flow ends with `no session provided`, rerun the command and complete the browser redirect again.
+- OAuth can reset selection state; after a successful login, re-check `tau --defaults --yes json current` and re-select cloud/project if needed.
 
 ## Recovering from `/me 401`
 
