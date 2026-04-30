@@ -58,15 +58,25 @@ tau --defaults --yes list projects --json
 ## Selecting a project
 
 ```bash
-tau --defaults --yes select project --name <project_name>
+tau --defaults --yes select project <project_name>
 tau --defaults --yes json current   # verify Project = <project_name>
 ```
+
+### CLI drift note (`--name` vs positional)
+
+Some `tau` builds accept `tau select project --name <project>`, but others only work reliably with the **positional** form `tau select project <project>`. If selection fails with `project \`...\` not found` while `tau list projects --json` shows the project, run:
+
+```bash
+tau select project --help
+```
+
+Then use the syntax your binary documents, and re-verify via `tau --defaults --yes json current`.
 
 If `Project` doesn't match `<project_name>` after a `select`, clear and reselect:
 
 ```bash
 tau --defaults --yes clear project
-tau --defaults --yes select project --name <project_name>
+tau --defaults --yes select project <project_name>
 tau --defaults --yes json current
 ```
 

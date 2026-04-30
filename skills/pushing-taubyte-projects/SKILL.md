@@ -109,6 +109,7 @@ For **website and library repos**, raw `git push` is an acceptable fallback when
 - **Don't trust `tau pull`'s exit code alone** for the "already up-to-date" case.
 - **Push order matters** for resource-dependent code; otherwise a website build can fail because the new domain/database isn't yet in cloud config.
 - **For non-interactive automation** every `tau push` invocation must include both `--defaults --yes` and `-m`.
+- **Dream inject requires a real `HEAD`.** If the project `code/` repo branch exists but has **no commits**, Dream inject can fail with `getting HEAD ... reference not found`. Create a minimal initial commit and `tau push project --code-only -m "init"` before bootstrapping Dream.
 
 ## Related skills
 

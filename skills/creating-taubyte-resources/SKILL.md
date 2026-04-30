@@ -12,6 +12,22 @@ description: Creates Taubyte resources non-interactively via `tau new` for domai
 - Building out a project after `bootstrapping-taubyte-projects`
 - Reviewing or scripting non-interactive resource creation
 
+## Intent-first resource planning (agent behavior)
+
+When a user asks to "create an app" (not just a resource), first infer the **minimum Taubyte resource set** required to make that app real, then create those resources with correct scope + wiring.
+
+General heuristics:
+
+- **Web app UI** → create a **website** (project-scoped if needed or mentioned) + a **domain** (project-scoped if mentioned) and attach the site to the domain and path(s).
+- **Persistent data** → create a **database** (application-scoped if needed). create storage if needed ; choose only when implied by the intent.
+- **UI ↔ data/API glue** → create at least one **HTTP function** that reads/writes the database and returns JSON for the website to consume. Attach the function to the same domain when a same-origin `/api/...` pattern is implied.
+
+Rules while doing this:
+
+- Prefer the **fewest resources** that satisfy the intent, but do not omit the glue (e.g. database without a function is usually not an "app").
+- Keep scopes correct: database/storage/messaging/service are **application-scoped** if needed or mentioned; website/domain are **project-scoped** if needed or mentioned.
+- Use match strings as stable wiring keys (database `match`, messaging channel, service protocol) and keep them consistent with Go calls and triggers (see [enforcing-taubyte-constraints](../enforcing-taubyte-constraints/SKILL.md) rule 16).
+
 ## Preconditions
 
 - `tau --defaults --yes json current` shows the **correct** Project (and the right Application, or none, depending on scope) — see [selecting-taubyte-context](../selecting-taubyte-context/SKILL.md).

@@ -137,6 +137,7 @@ Runtime check progress:
 
 - **Don't run `tau build` casually.** It works, but it can leave **root-owned** artifacts (`lib/`, `main.go`, `artifact.zip`) in the function tree. **Never commit those** — they break Dream/go-wasi builds (mixed packages, import cycles). Prefer the Docker recipe above; delete + `git rm --cached` if they appear, and add `.gitignore` patterns for them.
 - **Wrong `Host:` header = 404.** Dream's gateway routes by `Host:`; without the right header you'll see `404` even with a healthy function. Re-read the FQDN from the domain YAML.
+- **Some gateways require `Host` to include the port.** If you see `no substrate match found` while the gateway is reachable, retry with `-H "Host: <fqdn>:<gateway_port>"`.
 - **Stale gateway port across sessions.** `dream status gateway` is the canonical source; ports change between Dream runs.
 - **Generated FQDNs only resolve via hosts mapping.** They aren't real DNS; the browser must be told `127.0.0.1`.
 - **Remote vs Dream**: this skill is Dream-focused. For remote clouds, hit the FQDN directly over the public DNS the cloud configured.

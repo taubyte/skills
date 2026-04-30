@@ -27,11 +27,20 @@ On a freshly imported project, **`push-specific` is unreliable until `push-all` 
 ```
 First-run progress:
 - [ ] Step 1: `git push` config + code repos to GitHub
+- [ ] Step 1.1: Ensure the code repo branch has a HEAD commit (no empty `main`)
 - [ ] Step 2: `dream inject push-all <universe>` (one-time bootstrap)
 - [ ] Step 3: Verify config build succeeded (see diagnosing-dream-builds)
 - [ ] Step 4: Register website/library repos (see registering-dream-repositories)
 - [ ] Step 5: From now on, use `push-specific` for incremental updates
 ```
+
+### HEAD-less code repo gotcha (Dream inject hard fail)
+
+If the project's code repo (e.g. `tb_code_<project>`) is on `main` but has **no commits**, Dream inject can fail with errors like:
+
+- `getting HEAD ... reference not found`
+
+Fix: create a minimal initial commit in the code repo and push it (via `tau push project --code-only -m "init"`), then retry inject.
 
 ## Bootstrap command (`push-all`)
 
@@ -93,6 +102,7 @@ For a config-or-code-only push, the same shape works against the config repo's `
 | `unknown cloud` from `tau` afterwards | Cloud selection drifted | `tau --defaults --yes select cloud --universe <u>` then retry |
 | `push-specific` succeeds but no build appears | Repo not registered with local auth/repository service | See [registering-dream-repositories](../registering-dream-repositories/SKILL.md) |
 | `tau query builds` empty | Build view not wired to Dream-local jobs | Use jobs API HTTP fallback in [diagnosing-dream-builds](../diagnosing-dream-builds/SKILL.md) |
+| `project ids not equal <cloud> != <yaml>` in config job logs | `config/config.yaml` `id:` does not match the Dream project id | Set `config/config.yaml` `id:` to `tau query project <name> --json` `id`, push config, then inject again |
 
 ## Preconditions
 

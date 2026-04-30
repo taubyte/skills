@@ -66,6 +66,7 @@ Each rule is a one-liner. The link points to the skill that explains and enforce
 24. **`push-specific` requires long flags + universe last** to avoid `Required flags "repository-id, repository-fullname" not set`. → [triggering-dream-builds](../triggering-dream-builds/SKILL.md)
 25. **Register website/library repos with the local repository service** after `tau import website|library` (PUT `/repository/github/<repo_id>`); otherwise `push-specific` won't trigger builds for them. → [registering-dream-repositories](../registering-dream-repositories/SKILL.md)
 26. **`dream inject` is Dream-only.** Never run it against a remote cloud — webhooks handle that side. → [deploying-to-remote-clouds](../deploying-to-remote-clouds/SKILL.md)
+26.1. **Dream requires a real git HEAD in each injected repo.** Empty-branch repos (no commits) can make inject fail with `getting HEAD ... reference not found`. → [triggering-dream-builds](../triggering-dream-builds/SKILL.md)
 
 ## Remote-cloud rules
 

@@ -85,6 +85,16 @@ Both flows still go through GitHub. `dream inject` simulates the webhook locally
 - Project name → use **snake_case** (dashes break `tau validate config` with `invalid variable name`). See [bootstrapping-taubyte-projects](../bootstrapping-taubyte-projects/SKILL.md).
 - Each website/library is its **own** GitHub repo.
 
+## Intent → resources (how to translate "build me an app")
+
+When a request is phrased as an **application** (not a single Taubyte resource), interpret it as a bundle of resources that must be created and wired together:
+
+- **UI**: website + domain + paths (project-scoped if needed or mentioned).
+- **State**: application + database/storage/messaging/service as implied (application-scoped if needed or mentioned).
+- **API glue**: at least one function providing the API surface the UI can call; attach it to the right domain and routes.
+
+The goal is to deliver a working composition, not just YAML. Use [creating-taubyte-resources](../creating-taubyte-resources/SKILL.md) as the concrete checklist for scopes, and [enforcing-taubyte-constraints](../enforcing-taubyte-constraints/SKILL.md) to keep matcher strings consistent across YAML and Go.
+
 ## Related skills
 
 - `starting-dream-locally` — bring up a Dream cloud

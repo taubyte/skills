@@ -118,6 +118,12 @@ Website build progress:
 - [ ] curl through gateway with Host header to confirm content (see verifying-taubyte-functions)
 ```
 
+If the gateway responds but content doesn't route (e.g. `no substrate match found`), retry the curl with a `Host` header that includes the gateway port:
+
+```bash
+curl -i -H "Host: <fqdn>:<gateway_port>" "http://127.0.0.1:<gateway_port>/"
+```
+
 ## Gotchas
 
 - **Empty `/out` after build = blank cloud** (or 404). Always confirm `cp` / `cp -a` / `mv` actually populated `/out`.
