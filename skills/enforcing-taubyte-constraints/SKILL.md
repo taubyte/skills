@@ -38,7 +38,7 @@ Each rule is a one-liner. The link points to the skill that explains and enforce
 
 ## Code authoring rules
 
-12. **Function root layout (Go)**: `empty.go` and `go.mod` at the function root. **Never** create a `lib/` subdirectory; never hand-author `main.go`. → [writing-taubyte-functions](../writing-taubyte-functions/SKILL.md)
+12. **Function root layout (Go)**: `empty.go` and `go.mod` at the function root. **Never** create a `lib/` subdirectory; never hand-author `main.go`. **Corollary:** careless **`tau build`** can still **generate** those paths as root-owned junk — **never commit them**; delete, `git rm --cached`, and `.gitignore` before push. → [writing-taubyte-functions](../writing-taubyte-functions/SKILL.md), [verifying-taubyte-functions](../verifying-taubyte-functions/SKILL.md)
 13. **Package name is NOT `main`.** Use `lib` (or any other name). → [writing-taubyte-functions](../writing-taubyte-functions/SKILL.md)
 14. **`//export <name>` must equal `execution.call`** in the function YAML. → [authoring-taubyte-function-types](../authoring-taubyte-function-types/SKILL.md)
 15. **HTTP handler order**: `Headers().Set` → `Write(body)` → `Return(status)`, in that order. Returning before writing yields empty/broken responses. → [writing-taubyte-functions](../writing-taubyte-functions/SKILL.md)

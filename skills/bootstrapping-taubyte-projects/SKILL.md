@@ -91,6 +91,18 @@ Notes:
 - The positional `<project_name>` is mostly a label; the cloud derives the canonical project name from the repos.
 - After import, `tau` selects the imported project automatically, but still verify with `tau --json current`.
 
+### Dream import — align `config/config.yaml` `id:`
+
+On **Dream** (and any cloud where the project record already existed), the cloud’s canonical **project id** may **not** match the `id:` at the top of a freshly cloned **`config/config.yaml`**. Dream config-compile / inject jobs can then fail with **project ids not equal**.
+
+After `tau import project ...` (or before first `dream inject` on that cloud), set **`config/config.yaml`** root **`id:`** to the value from:
+
+```bash
+tau --defaults --yes query project <project_name> --json
+```
+
+Then push config (`tau push project --config-only -m "..."`) before relying on builds.
+
 ## C — Clone an already-imported project locally
 
 When the project already exists on the selected cloud and you just want a local checkout:

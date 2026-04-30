@@ -41,7 +41,9 @@ The project id is the value of `id:` at the root of `config/config.yaml`. You ca
 dream status universe <universe>
 ```
 
-Find the auth/seer service port that exposes `/jobs/...`. **Ports are per-run** — rediscover every session.
+Find the service HTTP port that answers **`GET /jobs/<project_id>`**. Docs often say **auth/seer**; on some multiverse layouts **`patrick@<universe>` HTTP** responds to `/jobs/...` while another service returns `404`. If the first port you try does not serve `/jobs`, probe other **`dream status universe <universe>`** HTTP ports until you get `{"JobIds":[...]}`.
+
+**Ports are per-run** — rediscover every session.
 
 Optional CORS preflight (mirrors what the Console does):
 

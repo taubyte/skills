@@ -53,8 +53,8 @@ Picking an image:
 
 | Image | Use for |
 | --- | --- |
-| `taubyte/go-wasi:latest` | Default for Go serverless functions and libraries (TinyGo + WASI) it uses the package lib|
-| `taubyte/go-wasi:v2` | Pinned major version when you need stability across CI runs it uses the package main|
+| `taubyte/go-wasi:latest` | Default for Go serverless functions and libraries (TinyGo + WASI; handlers use `package lib` in the usual scaffold). |
+| `taubyte/go-wasi:v2` | Pinned major when you need stability across CI runs (image/layout may differ from `latest`; only switch when you intend to). |
 
 If you change the image here, **also use the same image** for any local Docker WASM verify (see [verifying-taubyte-functions](../verifying-taubyte-functions/SKILL.md)) so local and cloud builds match.
 
@@ -62,6 +62,11 @@ If you change the image here, **also use the same image** for any local Docker W
 
 ```bash
 #!/bin/bash
+
+# taubyte/go-wasi:latest: non-login build environments (Dream/monkey, some Docker invocations) often lack
+# go/tinygo on default PATH — export before wasm.sh or builds fail ("go: command not found", tinygo missing).
+export PATH="/usr/local/go/bin:/usr/local/tinygo/bin:${PATH}"
+
 . /utils/wasm.sh
 
 # Build-time env vars for this resource — declare here, NOT in config.yaml:
@@ -76,6 +81,7 @@ exit $ret
 
 What this does:
 
+- `export PATH=...` makes **`taubyte/go-wasi:latest`** reliably find **`go`** and **`tinygo`** when the shell is not a full login environment (matches what [verifying-taubyte-functions](../verifying-taubyte-functions/SKILL.md) does inside Docker verify).
 - `. /utils/wasm.sh` sources the toolchain helpers provided by the `taubyte/go-wasi` image.
 - `build "${FILENAME}"` invokes the helper that compiles the function into WASM.
 - The script writes the build's exit code to `/out/ret-code` and exits with the same code (Taubyte uses both signals).

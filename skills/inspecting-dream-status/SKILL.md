@@ -39,7 +39,8 @@ A successful call lists the running services and their assigned ports. If it err
 ## Finding the gateway port (for curl tests)
 
 ```bash
-GW=$(dream status gateway default | awk '/@ http/{print $3}' | head -n1)
+# `dream status gateway` often prints a blank line before `@ http://...`; awk '/@ http/{print $3}' can be empty.
+GW=$(dream status gateway default | grep -Eo 'http://[0-9.]+:[0-9]+' | head -n1)
 echo "$GW"
 # example: http://127.0.0.1:<gateway_port>
 ```
@@ -76,6 +77,7 @@ Recovery: re-check how Dream was started, then call `dream status universe <corr
 
 ## Gotchas
 
+- **Gateway URL parsing:** `dream status gateway <u>` often prints a **blank line** before `@ http://...`. Parsers like `awk '/@ http/{print $3}'` can return **empty**; prefer `grep -Eo 'http://[0-9.]+:[0-9]+' | head -n1` (same pattern as [verifying-taubyte-functions](../verifying-taubyte-functions/SKILL.md)).
 - The default value of the `--universe` / `-u` flag is `blackhole`, even on builds where `dream start` defaults to `default`. **Pass the universe explicitly** to avoid silent mismatches.
 - A status call that hangs usually means the multiverse process exited; check the terminal running `dream start` / `dream new multiverse --daemon`.
 - Ports are dynamic per run. **Don't hard-code ports across sessions** — re-discover via `dream status` each time.

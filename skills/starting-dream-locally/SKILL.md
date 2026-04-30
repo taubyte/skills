@@ -45,6 +45,14 @@ Common options (from `dream start --help`):
 dream status universe default
 ```
 
+If `dream status universe default` fails with **universe does not exist** (wording may vary), the multiverse may be up but **no universe node** was created yet — create one:
+
+```bash
+dream new universe default
+```
+
+Then re-run `dream status universe default`.
+
 Custom universe example:
 
 ```bash

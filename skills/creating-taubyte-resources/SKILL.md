@@ -206,6 +206,7 @@ Resource creation progress:
 
 ## Gotchas
 
+- **Dream vs CLI function paths:** `tau new function ... --source .` with an application selected may scaffold under **`code/applications/<app>/functions/<fn>/`** in your clone, while a **local Dream** builder error may reference **`code/<app>/functions/<fn>/`** (no `applications/` segment). Treat the **first failing build log path** as ground truth and move/align sources to what Dream expects before guessing layouts.
 - **Application bleed**: forgetting `tau clear application` causes later `tau new domain|website|library` to land in the app instead of project scope.
 - **Matcher = runtime string**: `match` in YAML must equal the literal Go calls (`database.New("...")`, `pubsubnode.Channel("...")`, `trigger.channel`). Mismatched leading `/` is a frequent cause of "open failed" / silent producers.
 - **Repo strategy must be explicit** for websites/libraries — either `--generate-repository` with a deterministic `--repository-name`, or `--repository-name`/`--repository-id` for an existing repo.

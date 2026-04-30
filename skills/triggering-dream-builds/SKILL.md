@@ -46,6 +46,13 @@ dream inject push-all \
 - `<universe>` is positional and is the **last** argument (typically `default`).
 - `--branch` defaults to `main`/`master` if omitted.
 
+### `dream inject` and `--path` (local project root)
+
+Some `dream inject` variants accept **`--path` / `-p`** pointing at an **absolute local project root**. That makes Dream build from your **working tree**, not necessarily what you last pushed to GitHub.
+
+- **Risk:** if the tree contains **build junk** (e.g. root-owned `lib/`, `main.go`, `artifact.zip` from a bad local `tau build`), inject can compile **worse** than a clean GitHub clone.
+- **Default:** after `tau push`, run inject **without** `--path` so Dream clones from GitHub — unless you have explicitly verified the workspace is clean.
+
 ## Incremental command (`push-specific`)
 
 Use **long flags** and put the universe **last** — this is the only ordering observed to work reliably for website/library repos:

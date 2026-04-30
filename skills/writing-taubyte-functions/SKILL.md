@@ -27,6 +27,8 @@ Key constraints:
 - **Signature** is `func Handler(e event.Event) uint32` — returns `0` on success, non-zero on failure.
 - **`event.Event`** is a tagged union; you call `.HTTP()`, `.PubSub()`, or `.P2P()` to get the typed handle, depending on the function's `trigger.type`.
 
+**Anti-pattern:** switching the handler file to **`package main`** to "fix" compile errors when the real problem is **build hygiene** (generated `lib/`, `main.go`, bad `PATH` in `.taubyte/build.sh`, etc.). Stay on **`package lib`** (or another non-`main` name) per the constraints above; fix the toolchain and repo state instead — see [verifying-taubyte-functions](../verifying-taubyte-functions/SKILL.md) and [configuring-taubyte-build-runtime](../configuring-taubyte-build-runtime/SKILL.md).
+
 ## Module + imports
 
 `go.mod` should depend on:

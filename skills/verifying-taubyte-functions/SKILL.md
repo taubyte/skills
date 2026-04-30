@@ -43,6 +43,8 @@ docker run --rm \
     rsync -a --delete /src_ro/ /src/ 2>/dev/null || cp -a /src_ro/. /src/
     cd /src
     export CODE=/src
+    # go-wasi:latest: go/tinygo live under /usr/local/* but are often missing from PATH in non-login shells (same class of env Dream uses when running build.sh).
+    export PATH="/usr/local/go/bin:/usr/local/tinygo/bin:${PATH}"
     source /utils/wasm.sh
     ls -la /out
   '
@@ -60,6 +62,7 @@ Why this shape:
 - The function's `.taubyte/config.yaml` declares the build image (e.g. `taubyte/go-wasi:latest` or `taubyte/go-wasi:v2`). **Use the same image** in the local recipe as the cloud will use.
 - Don't use `-it` in non-TTY environments — it fails with `cannot attach stdin to a TTY-enabled container`. The recipe above already omits `-it`.
 - The recipe is intended only when the user explicitly asks for local build verification. Default Taubyte workflow is "push to GitHub → cloud builds".
+- **`taubyte/go-wasi:latest` + `PATH`:** the image installs **`go`** and **`tinygo`** under `/usr/local/go/bin` and `/usr/local/tinygo/bin`. Non-login shells (this Docker block, Dream/monkey running `.taubyte/build.sh`) often start with a **minimal `PATH`**, so `/utils/wasm.sh` can fail with **`go: command not found`** unless you export `PATH` (shown in the recipe above) or put the same `export` at the top of **`.taubyte/build.sh`** before `. /utils/wasm.sh` — see [configuring-taubyte-build-runtime](../configuring-taubyte-build-runtime/SKILL.md).
 
 ### Output expectation
 
@@ -71,7 +74,8 @@ To curl a function running on Dream, you need (1) the gateway port and (2) the f
 
 ```bash
 # 1. Discover gateway port
-GW=$(dream status gateway default | awk '/@ http/{print $3}' | head -n1)
+# `dream status gateway` often prints a blank line before `@ http://...`; awk '/@ http/{print $3}' can return empty — prefer:
+GW=$(dream status gateway default | grep -Eo 'http://[0-9.]+:[0-9]+' | head -n1)
 
 # 2. Read the function's FQDN from its domain YAML
 FQDN=$(awk '/^fqdn:/{print $2; exit}' config/domains/<domain>.yaml)
@@ -122,7 +126,7 @@ Smoke check progress:
 
 ```
 Runtime check progress:
-- [ ] dream status gateway <universe> -> note port
+- [ ] dream status gateway <universe> -> note port (use grep -Eo 'http://[0-9.]+:[0-9]+' if awk returns empty)
 - [ ] Read FQDN from config/domains/<domain>.yaml
 - [ ] curl -i -H "Host: <fqdn>" http://127.0.0.1:<port>/<path>
 - [ ] Expect HTTP 200 + expected body
@@ -131,7 +135,7 @@ Runtime check progress:
 
 ## Gotchas
 
-- **Don't run `tau build` casually.** It works, but it can leave root-owned artifacts in your code repo. The Docker recipe above is the safer default for local verification.
+- **Don't run `tau build` casually.** It works, but it can leave **root-owned** artifacts (`lib/`, `main.go`, `artifact.zip`) in the function tree. **Never commit those** — they break Dream/go-wasi builds (mixed packages, import cycles). Prefer the Docker recipe above; delete + `git rm --cached` if they appear, and add `.gitignore` patterns for them.
 - **Wrong `Host:` header = 404.** Dream's gateway routes by `Host:`; without the right header you'll see `404` even with a healthy function. Re-read the FQDN from the domain YAML.
 - **Stale gateway port across sessions.** `dream status gateway` is the canonical source; ports change between Dream runs.
 - **Generated FQDNs only resolve via hosts mapping.** They aren't real DNS; the browser must be told `127.0.0.1`.

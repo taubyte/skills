@@ -16,6 +16,8 @@ description: Keeps `tau` pointing at the right cloud and project before any muta
 
 `tau` stores **profile** (auth) and **selection** (cloud + project + optional application) in the global `~/tau.yaml`, **not** in the on-disk project folder. So `cd`-ing into a project doesn't change `tau`'s selection; you must select explicitly. Projects are scoped **per cloud** — switching clouds can leave the project selection pointing at something that doesn't exist on the new cloud.
 
+**Dream / import drift:** the **`id:`** in your cloned **`config/config.yaml`** must match the **cloud’s** project id for that name on the selected cloud (see [bootstrapping-taubyte-projects](../bootstrapping-taubyte-projects/SKILL.md) — "Dream import — align `config/config.yaml` `id:`"). If builds reference the wrong id, fix the YAML and push config before `dream inject`.
+
 ## Quick checks
 
 ```bash
