@@ -90,12 +90,13 @@ Notes:
 
 - The positional `<project_name>` is mostly a label; the cloud derives the canonical project name from the repos.
 - After import, `tau` selects the imported project automatically, but still verify with `tau --json current`.
+- **First time on a remote FQDN**: if `tau list projects` omits the project, **`tau import project …` on that cloud** is mandatory before **`tau push`** attaches real builds; then align **`config/config.yaml` `id:`** with **`tau query project <name> --json`** (next subsection).
 
-### Dream import — align `config/config.yaml` `id:`
+### Align `config/config.yaml` `id:` after import (Dream **or** remote)
 
-On **Dream** (and any cloud where the project record already existed), the cloud’s canonical **project id** may **not** match the `id:` at the top of a freshly cloned **`config/config.yaml`**. Dream config-compile / inject jobs can then fail with **project ids not equal**.
+On **Dream** or after **`tau import project`** onto any cloud, the cloud’s canonical **project id** may **not** match the `id:` at the top of **`config/config.yaml`**. Jobs can then fail with **project ids not equal** or substrate drift.
 
-After `tau import project ...` (or before first `dream inject` on that cloud), set **`config/config.yaml`** root **`id:`** to the value from:
+After `tau import project ...` on the **selected** cloud, set **`config/config.yaml`** root **`id:`** to the value from:
 
 ```bash
 tau --defaults --yes query project <project_name> --json

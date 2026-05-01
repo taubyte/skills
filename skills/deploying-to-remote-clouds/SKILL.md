@@ -1,6 +1,6 @@
 ---
 name: deploying-to-remote-clouds
-description: Deploys to a real (non-Dream) Taubyte cloud — selects the cloud by FQDN with `tau select cloud --fqdn <fqdn>`, pushes via `tau push project` (relying on GitHub webhook delivery, no `dream inject`), and verifies with `tau query builds`, `tau query build --jid`, and `tau query logs --jid`. Encodes the project-id mismatch recovery (`project ids not equal`), the generated-domain rule (only generate while `Cloud Type: remote`), the GitHub webhook-delivery sanity check when the build table is empty, and TLS/cert expectations. Use when targeting a remote Taubyte cloud rather than Dream local, or when a deploy seems "silent" on a remote cloud.
+description: Deploys to a real (non-Dream) Taubyte cloud — selects the cloud by FQDN with `tau select cloud --fqdn <fqdn>`, registers projects with `tau import project` when missing on that cloud, pushes via `tau push project`, and distinguishes **code** builds from **website** builds (`tau push website`, `AssetCid`). Covers project-id alignment, replacing Dream `*.default.localtau` with remote-suitable FQDNs, `*.gen.<cloud>` CID-suffix naming on some hosts, and verification with `tau query builds/logs`. No `dream inject` on remote. Use when targeting a remote cloud or diagnosing "API works, GET / fails".
 ---
 
 # Deploying To Remote Clouds
@@ -77,6 +77,20 @@ Remote push progress:
 `--message` is required when `--defaults` is set — see [pushing-taubyte-projects](../pushing-taubyte-projects/SKILL.md).
 
 **No `dream inject`** for remote. The webhook does the equivalent automatically.
+
+## Project registration on remote (easy to overlook)
+
+Projects are **per cloud**. If `tau --defaults --yes list projects` on your target FQDN **does not** list the project yet, **`tau push` cannot wire real builds**. Register the GitHub repo pair once:
+
+```bash
+tau --defaults --yes select cloud --fqdn <fqdn>
+tau --defaults --yes import project <snake_case_name> \
+  --config <org>/tb_<name> \
+  --code   <org>/tb_code_<name>
+tau --defaults --yes query project <name> --json   # canonical id:
+```
+
+Then set **`config/config.yaml`** root **`id:`** to that **`id`** (same alignment as [bootstrapping-taubyte-projects](../bootstrapping-taubyte-projects/SKILL.md) — not only for Dream) and **`tau push project --config-only`** before relying on code/website builds.
 
 ## Verification commands
 
@@ -187,6 +201,10 @@ If the request hangs or 404s but `tau query function <fn>` shows the function ex
 
 | Symptom | Likely cause | Fix |
 | --- | --- | --- |
+| `GET /` returns `500` / **no HTTP match for method `GET`** while **`GET /api/...` returns `200`** | **Website** static bundle not deployed: only the **code** repo built; the **website** repo (`tb_code_<project>_<site>`) has no successful job / **`AssetCid`** | Run **`tau push website <site_name>`**; in **`tau query builds --json`**, confirm a job whose **`Meta.Repository`** is the **website** repo and **`AssetCid`** maps the **website resource id** → a **`baf…`** artifact. Relative `fetch("/api/...")` in `index.html` is fine once **`/`** serves HTML. |
+| Config job: **`domain … invalid fqdn … *.default.localtau`** / **TXT lookup … localtau … no such host** | Dream-generated **`*.default.localtau`** left in config after switching to a **public** remote (compiler checks real DNS, e.g. `1.1.1.1`) | **`tau delete domain <name>`** then **`tau new domain <name> --fqdn <remote-suitable> --type auto`** (CLI only — never hand-edit domain YAML); **`tau push project --config-only`**. Remove orphan **app-scoped** domains still on **`localtau`** the same way. |
+| Config job: **`generated fqdn … does not contain last 8 of project id <CID>`** | On some remotes, **`*.gen.<cloud>`** hostnames must **embed the last 8 characters** of the project CID | `python3 -c "s='<project_cid>'; print(s[-8:])"` and choose an **`*.gen.<cloud>`** FQDN that **contains** that substring; when recreating, **reuse the same logical domain name** (e.g. `generated`) so existing **`domains:`** lists in websites/functions stay valid. |
+| `tau pull project` prints **`already up-to-date`** and exits non-zero | **`tau pull` quirk** — not necessarily a git failure | Confirm with **`git fetch`** + **`git status`** in **`config/`** and **`code/`**; treat as success if trees match **`origin`**. See [pushing-taubyte-projects](../pushing-taubyte-projects/SKILL.md). |
 | `unknown cloud` on push | Cloud selection lost between sessions | `tau select cloud --fqdn <fqdn>` then retry push |
 | `project ids not equal <a> != <b>` | `config/config.yaml id:` differs from cloud canonical | Update `id:` to the cloud's canonical id, push config |
 | `tau query builds` empty after push | Webhook delivery failed / pointed at wrong cloud | Check GitHub Webhooks → Recent Deliveries; verify `tau --json current` |

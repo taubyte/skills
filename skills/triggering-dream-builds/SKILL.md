@@ -91,7 +91,7 @@ For a config-or-code-only push, the same shape works against the config repo's `
 `dream inject` can return exit code `0` while still failing. After the call:
 
 - Scan stdout/stderr for `failed`, `error`, `inject`, or missing-resource messages.
-- Confirm a build appeared via `tau query builds --since 1h` or the jobs API fallback (see [diagnosing-dream-builds](../diagnosing-dream-builds/SKILL.md)).
+- Confirm a build appeared via `tau query builds --since 1h` or the jobs API fallback (see [diagnosing-dream-builds](../diagnosing-dream-builds/SKILL.md)) — **`GET /jobs/<project_id>`** should return **`JobIds`** once work is really queued; do not trust exit **0** alone.
 - If a build doesn't appear and the repo is a website/library, run [registering-dream-repositories](../registering-dream-repositories/SKILL.md) first, then retry.
 
 ## Common failure → recovery

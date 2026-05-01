@@ -79,8 +79,7 @@ Recovery options (in order of preference):
    ```bash
    tau --defaults --yes json current
    ```
-
-## Retrieving the token for HTTP calls
+4. **Dream / Patrick jobs HTTP** returning **`401`** or a body like **`{"invalid Github token":...}`** uses the same token as `tau` — refresh the GitHub PAT (steps 1–2) before spending time on inject or build logic ([diagnosing-dream-builds](../diagnosing-dream-builds/SKILL.md)).
 
 Several Dream-side flows need the same GitHub token (jobs API, repository registration). Read it from `~/tau.yaml` rather than pasting it into shell history:
 

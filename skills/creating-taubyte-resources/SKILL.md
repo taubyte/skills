@@ -71,6 +71,10 @@ tau --defaults --yes new domain <domain_name> \
   --description "<desc>"
 ```
 
+### Some remotes: `*.gen.<cloud_fqdn>` and the project CID suffix
+
+Host policy can require that a generated-style hostname under **`*.gen.<cloud>`** **embed the last eight characters** of the project’s canonical CID from **`tau query project <name> --json`** → **`id`**. Compute: `python3 -c "s='<cid>'; print(s[-8:])"`. Omitting this substring breaks config-compile with errors like **`does not contain last 8 of project id`**. When replacing a domain for this reason, **reuse the same logical domain resource name** (e.g. `generated`) if you can — so **`domains:`** on websites/functions stay valid without mass YAML edits.
+
 ### Forbidden flag
 
 **Never** pass `--generated-fqdn-prefix` (or `--g-prefix`) — it's not supported by policy. Use `--generated-fqdn` alone or use `--fqdn` with a controlled hostname.

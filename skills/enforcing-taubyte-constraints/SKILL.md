@@ -82,6 +82,10 @@ Each rule is a one-liner. The link points to the skill that explains and enforce
 33. **PUT may not route like GET/DELETE** even when YAML declares PUT — the edge can return **`no HTTP match for method PUT`** while other methods work; logs may be incomplete. Prefer a **dedicated POST route** (e.g. `/api/resource/update`) as a separate function until routing is confirmed. → [authoring-taubyte-function-types](../authoring-taubyte-function-types/SKILL.md)
 34. **Keep scaffold `empty.go`** (and matching `FILENAME` in `build.sh`) unless you have an image-verified recipe — renaming to `lib.go` / changing the entry file without full alignment breaks TinyGo and can drop **`artifact.wasm`**. → [configuring-taubyte-build-runtime](../configuring-taubyte-build-runtime/SKILL.md), [writing-taubyte-functions](../writing-taubyte-functions/SKILL.md)
 35. **Website `.taubyte/build.sh` is executable shell only** — never paste HTML or other markup into it. A merged file breaks the script; replace with a minimal `mkdir -p /out` + copy pattern. → [building-taubyte-websites](../building-taubyte-websites/SKILL.md)
+36. **Remote / public cloud: never ship `*.default.localtau` FQDNs** — the config compiler uses public DNS (`1.1.1.1`-class); Dream hostnames fail TXT checks. Delete + recreate domains via **`tau`** with a remote-suitable **`--fqdn`**. → [deploying-to-remote-clouds](../deploying-to-remote-clouds/SKILL.md), [editing-taubyte-resources](../editing-taubyte-resources/SKILL.md)
+37. **Remote: `GET /` broken but `/api/...` OK** means the **website** repo artifact is missing — **`tau push website <site>`** + verify **`AssetCid`** on that repo’s build job, not further function debugging by default. → [pushing-taubyte-projects](../pushing-taubyte-projects/SKILL.md), [deploying-to-remote-clouds](../deploying-to-remote-clouds/SKILL.md), [building-taubyte-websites](../building-taubyte-websites/SKILL.md)
+38. **`tau pull` → `already up-to-date` + non-zero exit** is often a CLI quirk — confirm with **`git fetch`/`git status`** before treating it as failure. → [pushing-taubyte-projects](../pushing-taubyte-projects/SKILL.md)
+39. **Sibling dirs (`tau_notes` vs `tau_it`) + global `tau` selection**: **`tau --json current` → `Project`** must equal the **`config/config.yaml` `name:`** in the tree you `cd`’d into. → [selecting-taubyte-context](../selecting-taubyte-context/SKILL.md)
 
 ## Pre-push checklist (copy into the session)
 
@@ -98,6 +102,7 @@ Pre-push audit:
 - [ ] Dream: bootstrap with push-all done, push-specific uses long flags + universe last (rules 23, 24)
 - [ ] Remote: id alignment OK, no dream inject (rules 26, 27)
 - [ ] If remote/Dream complained about `.taubyte` path: function dir matches log (rule 32); website build.sh is pure shell (rule 35)
+- [ ] Remote: no lingering `localtau` domains in config when target is public FQDN (rule 36); if static page 500: website build + AssetCid verified (rule 37); `tau pull` quirks checked with git (rule 38); `tau` Project matches directory `config.yaml name` (rule 39)
 ```
 
 ## Related skills

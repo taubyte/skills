@@ -16,6 +16,8 @@ description: Diagnoses Dream local-cloud builds when `tau list/query builds` is 
 
 `tau list/query builds` is a convenience view. On Dream local clouds it isn't always wired to local jobs. The **source of truth for Dream jobs is the local jobs HTTP endpoint** exposed by Dream's auth/seer service. Once you have a job id from there, `tau query logs --jid <jid>` can download the logs.
 
+**Token health:** if **`GET /jobs/<project_id>`** (or related Patrick HTTP) returns **`401`** or **`invalid Github token`**, refresh the GitHub PAT in **`~/tau.yaml`** / `tau login …` first — see [authenticating-taubyte-cli](../authenticating-taubyte-cli/SKILL.md). A stale token looks like a "Dream is broken" problem but is only auth.
+
 ## Workflow
 
 ```

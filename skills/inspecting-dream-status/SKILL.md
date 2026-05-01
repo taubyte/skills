@@ -52,6 +52,8 @@ FQDN=$(awk '/^fqdn:/{print $2; exit}' config/domains/<domain>.yaml)
 curl -i -H "Host: $FQDN" "$GW/<path>"
 ```
 
+**Dream local is plain HTTP on the gateway port** from `dream status gateway …` (often **`http://127.0.0.1:<port>`**) — not `https://` on **`:443`** unless you intentionally terminate TLS elsewhere. If the browser or curl shows connection refused on **80/443**, you're usually missing the **explicit gateway port**.
+
 ## Universe-name failure mode
 
 `dream status` always prints results for **exactly** the universe name passed in. Common mismatches:

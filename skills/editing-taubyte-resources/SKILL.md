@@ -73,6 +73,8 @@ tau --defaults --yes delete domain <name>
 tau --defaults --yes new domain    <name> --fqdn <new_fqdn> --type auto
 ```
 
+**Migrating Dream → remote (DNS sanity):** `*.default.localtau` validates only in Dream‑like DNS; a **remote** config compiler checks **public** resolvers (`1.1.1.1`-class) and fails with **`TXT lookup … localtau … no such host`**. **`tau delete domain` / `tau new domain … --fqdn … --type auto`** on the **remote** cloud (CLI only), then **`tau push project --config-only`**. Also remove **unused app-scoped** domains whose **`fqdn`** still ends in **`localtau`** (**`tau select application …`**, delete, **`clear application`**) — they sit in **`config/`** and can compile-fail later even if nothing references them.
+
 ### Website
 
 ```bash
@@ -202,6 +204,8 @@ Edit/delete progress:
 ```
 
 ## Recovery — symptom → likely cause
+
+After **`tau edit website …`**, always **`tau query website <name> --json`** — don’t assume the first CLI attempt stuck; **`domains`** / **`paths`** in that JSON must match what functions use when debugging same-origin **`/api/...`** (mismatch manifests as **`query website`** still pointing at **`generated`** after you thought domains moved).
 
 | Symptom | Likely cause | Fix |
 | --- | --- | --- |

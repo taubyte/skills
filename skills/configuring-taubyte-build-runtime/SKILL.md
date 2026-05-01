@@ -207,6 +207,8 @@ Pre-push validation progress:
 
 ## Gotchas
 
+- **Dream / POSIX `sh` for some website (and older) builds:** `/bin/sh` must not use **`set -o pipefail`** or **`set -u`** unless every referenced variable exists. Prefer **`#!/bin/sh`** + **`set -e`** only for minimal static sites; **`set -eu`** + implicit **`$CODE`** yields **`parameter not set`**. Matches field reports against **`illegal option -o pipefail`** on Alpine/`sh`.
+- **`taubyte/go-wasi` `wasm.sh` + `.git` under `SRC=/src`:** if the recipe does `mv .git …` inside **`cd "${SRC}"`**, ensure **`mkdir -p /src/.git`** exists **before** the build helper runs (Dream-class builds).
 - **Env vars in `config.yaml` do nothing for build-time use.** Always `export` them in `build.sh`.
 - **Vite-only `cp -r dist/* /out/` on a CRA repo silently produces an empty `/out`.** Always confirm `package.json`'s `scripts.build` output directory.
 - **`cp -r dist /out/` puts files under `/out/dist/`** instead of into `/out/`. Use `cp -r dist/. /out/` (or `cp -a dist/. /out/`) to copy the **contents** of the directory.

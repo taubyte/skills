@@ -57,6 +57,10 @@ Why this shape:
 - The script `rsync`s the read-only source into the tmpfs, builds there, and writes only into the host-mapped `out/` directory.
 - Result: **no root-owned files** appear in your real source tree.
 
+### Naive bind-mount (avoid)
+
+Running **`taubyte/go-wasi`** (or similar) with **`$(pwd):/src`** read-write and **no** tmpfs scratch layer can drop **root-owned** `lib/`, `main.go`, moved sources, or zips into git. **Never commit** that junk — use the tmpfs pattern above; **`git status`** must be clean before **`tau push`** (field-reported footgun).
+
 ### Notes
 
 - The function's `.taubyte/config.yaml` declares the build image (e.g. `taubyte/go-wasi:latest` or `taubyte/go-wasi:v2`). **Use the same image** in the local recipe as the cloud will use.

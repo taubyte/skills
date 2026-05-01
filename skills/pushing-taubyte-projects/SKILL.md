@@ -96,12 +96,17 @@ tau --defaults --yes pull website <site_name>
 tau --defaults --yes pull library  <lib_name>
 ```
 
-**Quirk**: `tau pull project` (and friends) can print `already up-to-date` and **exit non-zero**. In git terms this is success; treat it as a CLI-output quirk, not an error. Don't gate retries on the exit code alone — read the message.
+**Quirk**: `tau pull project` (and friends) can print `already up-to-date` and **exit non-zero**. In git terms this is success; treat it as a CLI-output quirk, not an error. Don't gate retries on the exit code alone — read the message **and** confirm with **`git fetch` + `git status`** in **`config/`** / **`code/`** (or the website repo) that you really are aligned with **`origin`**.
+
+### Remote: “site down” but APIs work
+
+If **`GET https://<fqdn>/`** fails with **no HTTP match for `GET` / 500** but **`GET https://<fqdn>/api/...`** returns **200**, the **HTTPS functions** deployed from the **code** repo — the **website** repo did not publish a static **`AssetCid`**. Fix with **`tau push website <site_resource_name>`** and verify **`tau query builds`** includes a job for the **`tb_code_…_<site>`** repository with **`AssetCid`** populated (see [deploying-to-remote-clouds](../deploying-to-remote-clouds/SKILL.md)).
 
 ## Common failure → recovery
 
 | Symptom | Recovery |
 | --- | --- |
+| `GET /` fails on remote but `/api/...` works | **`tau push website <site>`**; confirm website-repo job + **`AssetCid`** in **`tau query builds --json`** (functions can work while static `/` has no artifact yet) |
 | `Commit Message: is required ...` | Add `-m "<msg>"` |
 | `unknown cloud` on push | Re-select cloud, retry: `tau --defaults --yes select cloud --universe <u>` (or `--fqdn <fqdn>`) → push again |
 | Push reports success but cloud doesn't see changes (Dream) | Run the appropriate `dream inject push-all` (bootstrap) or `push-specific` |

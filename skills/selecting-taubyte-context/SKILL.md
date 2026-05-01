@@ -148,6 +148,10 @@ Before any mutation:
 
 A push can target the wrong project when an old selection persists from a prior session — e.g. a dashed-name project (`my-project`) is still selected globally while you're editing the snake_case version (`my_project`) on disk. The `tau --json current` check catches this; always run it before `push` / `delete` / `inject`.
 
+## Multi-project layout on disk (reported pitfall)
+
+Multiple Taubyte projects often live as **sibling directories** (e.g. `…/tau_notes/` vs `…/tau_it/`). **`tau` selection lives in `~/tau.yaml`**, not in the folder you `cd` into. **Hard stop** if **`tau --json current` → `Project`** does not equal **`config/config.yaml` → `name:`** in the tree you are editing. Fix with **`tau select cloud …`**, **`tau select project <config.yaml name>`**, then re-verify before **`tau push` / `tau import` / `tau new`**.
+
 ## Gotchas
 
 - **Profile selection is global.** A teammate's terminal, a different session, or `tau new project` itself can leave you pointing somewhere unexpected. The only safe pattern is verify-on-each-mutation.
